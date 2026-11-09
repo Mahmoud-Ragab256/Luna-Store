@@ -78,4 +78,4 @@ Use `DEMO_MODE=true node scripts/seed-demo.js` with a securely injected MONGODB_
 
 Deployment remains pending explicit approval for the credential transfer and removal of Vercel's SSO gate described in PROJECT_STATUS.md. Do not claim a public live demo before its health, account, COD and simulated-payment flows pass against the actual deployment. No paid hosting upgrade is authorized or needed for the current preparation.
 
-Cross-platform build note: the first automatic Vercel build found a missing Rollup Linux native module in the Windows-generated lockfile. The matching @rollup/rollup-linux-x64-gnu version is now recorded as an explicit optional dependency. Keep this version aligned with Rollup when updating Vite. See upstream npm/cli issue 4828.
+Cross-platform build note: the first automatic Vercel build found a missing Rollup Linux native module in the Windows-generated lockfile. Matching Linux binaries for Rollup, Lightning CSS, Tailwind Oxide and esbuild are recorded as explicit optional dependencies. Keep their exact versions aligned with their parent packages when updating Vite/Tailwind. See upstream npm/cli issue 4828.
