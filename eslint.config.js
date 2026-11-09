@@ -1,0 +1,3 @@
+﻿import js from '@eslint/js';import globals from 'globals';import hooks from 'eslint-plugin-react-hooks';
+export default [{ignores:['**/node_modules/**','**/dist/**','artifacts/**','design/**','.runtime/**','**/.local/**']},js.configs.recommended,{files:['**/*.{js,jsx,mjs}'],languageOptions:{ecmaVersion:'latest',sourceType:'module',parserOptions:{ecmaFeatures:{jsx:true}},globals:{...globals.browser,...globals.node}},plugins:{'react-hooks':hooks},rules:{'no-unused-vars':['error',{varsIgnorePattern:'^[A-Z_]',argsIgnorePattern:'^_',caughtErrors:'none'}],'react-hooks/rules-of-hooks':'error','no-empty':['error',{allowEmptyCatch:true}]}}];
+
