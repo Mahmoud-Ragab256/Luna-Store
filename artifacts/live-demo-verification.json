@@ -1,0 +1,18 @@
+{
+  "url": "https://luna-store-peach.vercel.app",
+  "health": 200,
+  "databaseConnected": true,
+  "products": 40,
+  "secureSessionRefresh": true,
+  "customerAdminAccessDenied": true,
+  "codPending": true,
+  "idempotentOrder": true,
+  "codCancellation": true,
+  "simulatedOnlinePayment": true,
+  "adminLoginAndAnalytics": true,
+  "desktopAndMobile": true,
+  "productDetails": true,
+  "browserErrors": 0,
+  "realMoneyCharged": false,
+  "checkedAt": "2026-11-09T23:31:03.222Z"
+}

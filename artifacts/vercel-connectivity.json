@@ -9,5 +9,8 @@
   "topology": "ReplicaSetNoPrimary",
   "causeCode": "ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR",
   "networkAccessInspected": false,
-  "deployedCheckoutVerified": false
+  "deployedCheckoutVerified": false,
+  "phase": "Historical failure before Atlas Network Access was updated",
+  "resolved": true,
+  "supersededBy": "live-demo-verification.json"
 }
