@@ -41,3 +41,11 @@ Production build success confirms compilation, not working checkout or productio
 ## Manual verification
 
 Check desktop and narrow mobile widths, keyboard focus/order, menu/dialog open/close/focus restoration, loading/error/empty states, unavailable stock, long addresses/names, invalid mobile numbers, expired sessions, repeated checkout submission, disabled online payments and reduced-motion preferences. Review actual screenshots and browser traces; do not infer visual quality from a passing build.
+
+## Verified commands and isolation
+
+The latest run passed 24 backend integration tests, 10 frontend tests and 6 Chrome browser workflows. E2E uses its own Express API on 4100 and Vite on 5180; normal development remains 4000/5173. The browser fixture admin exists only in the isolated test database. No production or persistent development database is used by these tests.
+
+On this Windows machine the verified ignored `.local/mongodb/mongod.exe` is reused automatically. Other clean environments use mongodb-memory-server's official binary download. `npm dedupe` resolved a duplicate-Vitest runtime import failure during setup; the committed lockfile records the corrected tree.
+
+Additional checks: `npm audit` (0 reported vulnerabilities), `npm run build:seo`, and `node scripts/verify-prerender.js` (62 public pages and 40 product schemas). Real SMTP/Cloudinary/gateway credentials are not used in tests. The optional premium design auditor stalled in its own `iter_html_tags` parser while reading AdminPages.jsx; it has no pass claim. Runtime browser checks and repository ESLint completed.

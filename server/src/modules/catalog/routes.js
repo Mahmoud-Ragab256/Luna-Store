@@ -2,7 +2,15 @@ import { Router } from 'express';
 import mongoose from 'mongoose';
 import { z } from 'zod';
 import { rateLimit } from 'express-rate-limit';
-import { Product, Category, Review, Wishlist, ContactMessage, Newsletter, Order } from '../../database/models.js';
+import {
+  Product,
+  Category,
+  Review,
+  Wishlist,
+  ContactMessage,
+  Newsletter,
+  Order,
+} from '../../database/models.js';
 import { requireAuth } from '../../common/middleware/auth.js';
 import { validate } from '../../common/middleware/validate.js';
 import { AppError } from '../../common/errors/app-error.js';
@@ -10,24 +18,157 @@ import { catalogQuery, listProducts, getProduct } from './catalog.service.js';
 import { env } from '../../config/env.js';
 export const catalogRouter = Router();
 const objectId = z.string().regex(/^[a-f\d]{24}$/i);
-const contactLimit = rateLimit({ windowMs: 15 * 60000, limit: env.NODE_ENV === 'test' ? 1000 : 5, standardHeaders: 'draft-7', legacyHeaders: false });
-const newsletterLimit = rateLimit({ windowMs: 15 * 60000, limit: env.NODE_ENV === 'test' ? 1000 : 10, standardHeaders: 'draft-7', legacyHeaders: false });
-catalogRouter.get('/products', validate(catalogQuery, 'query'), async (req, res) => res.json(await listProducts(req.validated)));
-for (const [path, sort, extra] of [['featured', 'newest', { isFeatured: true }], ['new-arrivals', 'newest', {}], ['best-sellers', 'popularity', {}]]) catalogRouter.get(`/products/${path}`, async (req, res) => res.json(await listProducts({ page: 1, limit: 8, sort }, extra)));
-catalogRouter.get('/products/:productId/reviews', async (req, res) => { const product = mongoose.isValidObjectId(req.params.productId) ? await Product.findById(req.params.productId) : await Product.findOne({ slug: req.params.productId }); if (!product) throw new AppError(404, 'Product not found.'); res.json({ data: await Review.find({ productId: product._id, isApproved: true }).select('-userId').sort({ createdAt: -1 }).limit(50) }); });
-catalogRouter.post('/products/:productId/reviews', requireAuth, validate(z.object({ rating: z.number().int().min(1).max(5), comment: z.string().trim().min(5).max(2000) })), async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.productId)) throw new AppError(400, 'Invalid product.');
-  const product = await Product.findOne({ _id: req.params.productId, isActive: true }); if (!product) throw new AppError(404, 'Product not found.');
-  if (!await Order.exists({ userId: req.user._id, 'items.productId': product._id, fulfillmentStatus: 'delivered' })) throw new AppError(403, 'Reviews are available after your order is delivered.');
-  const review = await Review.create({ ...req.validated, userId: req.user._id, productId: product._id, name: req.user.name });
-  const [stats] = await Review.aggregate([{ $match: { productId: product._id, isApproved: true } }, { $group: { _id: null, averageRating: { $avg: '$rating' }, reviewCount: { $sum: 1 } } }]); await Product.updateOne({ _id: product._id }, { $set: { averageRating: stats.averageRating, reviewCount: stats.reviewCount } }); res.status(201).json({ data: review });
+const contactLimit = rateLimit({
+  windowMs: 15 * 60000,
+  limit: env.NODE_ENV === 'test' ? 1000 : 5,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
 });
-catalogRouter.get('/products/:slug', async (req, res) => res.json({ data: await getProduct(req.params.slug) }));
-catalogRouter.get('/categories', async (req, res) => res.json({ data: await Category.find({ isActive: true }).sort({ displayOrder: 1 }).lean() }));
-catalogRouter.get('/categories/:slug', async (req, res) => { const category = await Category.findOne({ slug: req.params.slug, isActive: true }); if (!category) throw new AppError(404, 'Category not found.'); res.json({ data: category }); });
-catalogRouter.get('/wishlist', requireAuth, async (req, res) => { const list = await Wishlist.findOne({ userId: req.user._id }); res.json({ data: list ? await Product.find({ _id: { $in: list.productIds }, isActive: true }) : [] }); });
-catalogRouter.post('/wishlist/items', requireAuth, validate(z.object({ productId: objectId })), async (req, res) => { if (!await Product.exists({ _id: req.validated.productId, isActive: true })) throw new AppError(404, 'Product not found.'); const list = await Wishlist.findOneAndUpdate({ userId: req.user._id }, { $addToSet: { productIds: req.validated.productId } }, { upsert: true, new: true, runValidators: true }); res.status(201).json({ data: list }); });
-catalogRouter.delete('/wishlist/items/:productId', requireAuth, async (req, res) => { objectId.parse(req.params.productId); await Wishlist.updateOne({ userId: req.user._id }, { $pull: { productIds: req.params.productId } }); res.json({ data: { message: 'Removed from wishlist.' } }); });
-catalogRouter.post('/contact', contactLimit, validate(z.object({ name: z.string().trim().min(2).max(100), email: z.string().email().max(254), subject: z.string().trim().min(3).max(150), message: z.string().trim().min(10).max(3000), website: z.string().max(0).optional() })), async (req, res) => { await ContactMessage.create(req.validated); res.status(201).json({ data: { message: 'Message received. We will reply by email.' } }); });
-catalogRouter.post('/newsletter', newsletterLimit, validate(z.object({ email: z.string().email().max(254) })), async (req, res) => { await Newsletter.updateOne({ email: req.validated.email.toLowerCase() }, { $setOnInsert: { consentAt: new Date() } }, { upsert: true }); res.status(201).json({ data: { message: 'You are on the list.' } }); });
-catalogRouter.get(['/config', '/store/config'], (req, res) => res.json({ data: { contactEmail: env.CONTACT_EMAIL || null, contactPhone: env.CONTACT_PHONE || null, onlinePaymentsEnabled: env.NODE_ENV !== 'production' && env.PAYMENT_PROVIDER === 'mock', currency: 'EGP' } }));
+const newsletterLimit = rateLimit({
+  windowMs: 15 * 60000,
+  limit: env.NODE_ENV === 'test' ? 1000 : 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+});
+catalogRouter.get('/products', validate(catalogQuery, 'query'), async (req, res) =>
+  res.json(await listProducts(req.validated)),
+);
+for (const [path, sort, extra] of [
+  ['featured', 'newest', { isFeatured: true }],
+  ['new-arrivals', 'newest', {}],
+  ['best-sellers', 'popularity', {}],
+])
+  catalogRouter.get(`/products/${path}`, async (req, res) =>
+    res.json(await listProducts({ page: 1, limit: 8, sort }, extra)),
+  );
+catalogRouter.get('/products/:productId/reviews', async (req, res) => {
+  const product = mongoose.isValidObjectId(req.params.productId)
+    ? await Product.findById(req.params.productId)
+    : await Product.findOne({ slug: req.params.productId });
+  if (!product) throw new AppError(404, 'Product not found.');
+  res.json({
+    data: await Review.find({ productId: product._id, isApproved: true })
+      .select('-userId')
+      .sort({ createdAt: -1 })
+      .limit(50),
+  });
+});
+catalogRouter.post(
+  '/products/:productId/reviews',
+  requireAuth,
+  validate(
+    z.object({
+      rating: z.number().int().min(1).max(5),
+      comment: z.string().trim().min(5).max(2000),
+    }),
+  ),
+  async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.productId))
+      throw new AppError(400, 'Invalid product.');
+    const product = await Product.findOne({ _id: req.params.productId, isActive: true });
+    if (!product) throw new AppError(404, 'Product not found.');
+    if (
+      !(await Order.exists({
+        userId: req.user._id,
+        'items.productId': product._id,
+        fulfillmentStatus: 'delivered',
+      }))
+    )
+      throw new AppError(403, 'Reviews are available after your order is delivered.');
+    const review = await Review.create({
+      ...req.validated,
+      userId: req.user._id,
+      productId: product._id,
+      name: req.user.name,
+    });
+    const [stats] = await Review.aggregate([
+      { $match: { productId: product._id, isApproved: true } },
+      { $group: { _id: null, averageRating: { $avg: '$rating' }, reviewCount: { $sum: 1 } } },
+    ]);
+    await Product.updateOne(
+      { _id: product._id },
+      { $set: { averageRating: stats.averageRating, reviewCount: stats.reviewCount } },
+    );
+    res.status(201).json({ data: review });
+  },
+);
+catalogRouter.get('/products/:slug', async (req, res) =>
+  res.json({ data: await getProduct(req.params.slug) }),
+);
+catalogRouter.get('/categories', async (req, res) =>
+  res.json({ data: await Category.find({ isActive: true }).sort({ displayOrder: 1 }).lean() }),
+);
+catalogRouter.get('/categories/:slug', async (req, res) => {
+  const category = await Category.findOne({ slug: req.params.slug, isActive: true });
+  if (!category) throw new AppError(404, 'Category not found.');
+  res.json({ data: category });
+});
+catalogRouter.get('/wishlist', requireAuth, async (req, res) => {
+  const list = await Wishlist.findOne({ userId: req.user._id });
+  res.json({
+    data: list ? await Product.find({ _id: { $in: list.productIds }, isActive: true }) : [],
+  });
+});
+catalogRouter.post(
+  '/wishlist/items',
+  requireAuth,
+  validate(z.object({ productId: objectId })),
+  async (req, res) => {
+    if (!(await Product.exists({ _id: req.validated.productId, isActive: true })))
+      throw new AppError(404, 'Product not found.');
+    const list = await Wishlist.findOneAndUpdate(
+      { userId: req.user._id },
+      { $addToSet: { productIds: req.validated.productId } },
+      { upsert: true, new: true, runValidators: true },
+    );
+    res.status(201).json({ data: list });
+  },
+);
+catalogRouter.delete('/wishlist/items/:productId', requireAuth, async (req, res) => {
+  objectId.parse(req.params.productId);
+  await Wishlist.updateOne(
+    { userId: req.user._id },
+    { $pull: { productIds: req.params.productId } },
+  );
+  res.json({ data: { message: 'Removed from wishlist.' } });
+});
+catalogRouter.post(
+  '/contact',
+  contactLimit,
+  validate(
+    z.object({
+      name: z.string().trim().min(2).max(100),
+      email: z.string().email().max(254),
+      subject: z.string().trim().min(3).max(150),
+      message: z.string().trim().min(10).max(3000),
+      website: z.string().max(0).optional(),
+    }),
+  ),
+  async (req, res) => {
+    await ContactMessage.create(req.validated);
+    res.status(201).json({ data: { message: 'Message received. We will reply by email.' } });
+  },
+);
+catalogRouter.post(
+  '/newsletter',
+  newsletterLimit,
+  validate(z.object({ email: z.string().email().max(254) })),
+  async (req, res) => {
+    await Newsletter.updateOne(
+      { email: req.validated.email.toLowerCase() },
+      { $setOnInsert: { consentAt: new Date() } },
+      { upsert: true },
+    );
+    res.status(201).json({ data: { message: 'You are on the list.' } });
+  },
+);
+catalogRouter.get(['/config', '/store/config'], (req, res) =>
+  res.json({
+    data: {
+      contactEmail: env.CONTACT_EMAIL || null,
+      contactPhone: env.CONTACT_PHONE || null,
+      onlinePaymentsEnabled: env.NODE_ENV !== 'production' && env.PAYMENT_PROVIDER === 'mock',
+      currency: 'EGP',
+    },
+  }),
+);

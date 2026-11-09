@@ -1,2 +1,317 @@
-import { useState,useEffect } from 'react';import { Link,NavLink,Outlet,useLocation,useNavigate } from 'react-router-dom';import {useSelector,useDispatch} from 'react-redux';import {Search,Heart,ShoppingBag,UserRound,Menu,X,ArrowRight,Truck,RotateCcw,ShieldCheck,Instagram} from 'lucide-react';import {Toaster,toast} from 'sonner';import {useApiMutation} from '../../api/baseApi';import {setCredentials,sessionReady} from '../../features/auth/authSlice';import {replaceCart} from '../../features/cart/cartSlice';import {replaceWishlist} from '../../features/wishlist/wishlistSlice';import {errorMessage} from '../../lib/utils';
-export default function Layout(){const [menu,setMenu]=useState(false);const [search,setSearch]=useState(false);const [term,setTerm]=useState('');const [email,setEmail]=useState('');const [subscribed,setSubscribed]=useState(false);const [mutate,{isLoading}]=useApiMutation();const count=useSelector(s=>s.cart.items.reduce((n,i)=>n+i.quantity,0));const user=useSelector(s=>s.auth.user);const dispatch=useDispatch();const location=useLocation();const navigate=useNavigate();useEffect(()=>{setMenu(false);setSearch(false);window.scrollTo({top:0,behavior:'instant'});},[location.pathname]);useEffect(()=>{let live=true;mutate({url:'/auth/refresh',method:'POST'}).unwrap().then(r=>{if(live)dispatch(setCredentials(r.data));}).catch(()=>{if(live)dispatch(sessionReady());});return ()=>{live=false;};},[dispatch,mutate]);useEffect(()=>{if(!user)return;const run=async()=>{try{const state=(await import('../../app/store')).store.getState();const merged=await mutate({url:'/cart/merge',method:'POST',body:{items:state.cart.items.map(i=>({productId:i.productId,sku:i.sku,quantity:i.quantity})),couponCode:state.cart.couponCode}}).unwrap();if(merged.data?.items)dispatch(replaceCart({...merged.data,items:merged.data.items.map(i=>({...i,productId:i.productId?._id||i.productId}))}));for(const p of state.wishlist.items)await mutate({url:'/wishlist/items',method:'POST',body:{productId:p._id}}).unwrap();const saved=await mutate({url:'/wishlist',method:'GET'}).unwrap();const products=saved.data?.productIds||saved.data?.items||saved.data;if(Array.isArray(products))dispatch(replaceWishlist(products.filter(p=>p&&typeof p==='object'&&p.slug)));}catch(e){toast.error(`Couldn’t sync your saved items. ${errorMessage(e)}`);}};run();},[user?._id,dispatch,mutate]);async function subscribe(e){e.preventDefault();try{await mutate({url:'/newsletter',method:'POST',body:{email}}).unwrap();setSubscribed(true);}catch(e){toast.error(errorMessage(e));}}return <><a href="#main-content" className="skip-link">Skip to content</a><div className="announcement">A little something for your wardrobe. <span>Free shipping over EGP 2,500</span></div><header className="site-header"><div className="header-inner"><button className="icon-btn mobile-menu" aria-label="Open navigation" aria-expanded={menu} onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button><nav className="desktop-nav" aria-label="Main navigation"><NavLink to="/products">Shop</NavLink><NavLink to="/products?sort=newest">New arrivals</NavLink><NavLink to="/categories">Collections</NavLink></nav><Link className="wordmark" to="/" aria-label="LUNA home">LUNA<span>Considered womenswear</span></Link><nav className="header-actions" aria-label="Your shopping"><button className="icon-btn" aria-label="Search products" aria-expanded={search} onClick={()=>setSearch(!search)}><Search/></button><Link className="icon-btn account-icon" to={user?'/account':'/login'} aria-label="Your account"><UserRound/></Link><Link className="icon-btn" to="/wishlist" aria-label="Wishlist"><Heart/></Link><Link className="icon-btn bag-link" to="/cart" aria-label={`Shopping bag, ${count} items`}><ShoppingBag/>{count>0?<span className="bag-count">{count}</span>:null}</Link></nav></div>{menu?<nav className="mobile-nav" aria-label="Mobile navigation"><Link to="/products">Shop all</Link><Link to="/products?sort=newest">New arrivals</Link><Link to="/categories">Collections</Link><Link to="/account">My account</Link><Link to="/contact">Contact</Link></nav>:null}{search?<form className="search-bar container" noValidate onSubmit={e=>{e.preventDefault();navigate(`/products?search=${encodeURIComponent(term)}`);setSearch(false);}}><label className="sr-only" htmlFor="site-search">Search products</label><Search size={18}/><input id="site-search" autoFocus value={term} onChange={e=>setTerm(e.target.value)} placeholder="Find your next favourite"/>{term?<button type="button" className="icon-btn" aria-label="Clear search" onClick={()=>setTerm('')}><X size={18}/></button>:null}<button className="text-link" type="submit">Search</button></form>:null}</header><main id="main-content"><Outlet/></main><section className="service-strip container" aria-label="Shopping services"><div><Truck/><span>Delivered across Egypt<small>Shipping calculated at checkout</small></span></div><div><RotateCcw/><span>A considered purchase<small>Read our returns policy</small></span></div><div><ShieldCheck/><span>Shop with confidence<small>Cash on delivery available</small></span></div></section><section className="newsletter"><div className="container newsletter-inner"><div><h2>A little LUNA in your inbox.</h2><p>New collections, styling notes and things worth knowing.</p></div><form noValidate onSubmit={subscribe}>{subscribed?<p role="status">You’re on the list. Welcome to LUNA.</p>:<><label className="sr-only" htmlFor="newsletter-email">Email address</label><input id="newsletter-email" type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="Your email address"/><button disabled={isLoading} aria-label="Subscribe to newsletter"><ArrowRight/></button></>}</form></div></section><footer><div className="container footer-grid"><div><Link to="/" className="wordmark">LUNA</Link><p>Thoughtful pieces.<br/>Endless possibilities.</p><Link to="/journal" className="text-link">Our story</Link></div><div><h3>Explore</h3><Link to="/products">Shop all</Link><Link to="/products?sort=newest">New arrivals</Link><Link to="/categories">Collections</Link><Link to="/products?discount=true">The edit on sale</Link></div><div><h3>Here to help</h3><Link to="/contact">Contact us</Link><Link to="/policies/shipping">Shipping & delivery</Link><Link to="/policies/returns">Returns & exchanges</Link><Link to="/policies/size-guide">Size guide</Link></div><div><h3>Your LUNA</h3><Link to="/account">My account</Link><Link to="/orders">Track an order</Link><Link to="/wishlist">Wishlist</Link><Link to="/journal"><Instagram size={14}/> Style journal</Link>{user?.role==='admin'?<Link to="/admin">Store administration</Link>:null}</div></div><div className="container footer-bottom"><span>© {new Date().getFullYear()} LUNA. All rights reserved.</span><span>Egypt · EGP</span><Link to="/policies/privacy">Privacy</Link><Link to="/policies/terms">Terms</Link></div></footer><Toaster richColors position="bottom-right" closeButton/></>;}
+import { useState, useEffect } from 'react';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  Search,
+  Heart,
+  ShoppingBag,
+  UserRound,
+  Menu,
+  X,
+  ArrowRight,
+  Truck,
+  RotateCcw,
+  ShieldCheck,
+  Instagram,
+} from 'lucide-react';
+import { Toaster, toast } from 'sonner';
+import { store } from '../../app/store';
+import { useApiQuery, useApiMutation } from '../../api/baseApi';
+import { setCredentials, sessionReady } from '../../features/auth/authSlice';
+import { replaceCart } from '../../features/cart/cartSlice';
+import { replaceWishlist } from '../../features/wishlist/wishlistSlice';
+import { money, errorMessage } from '../../lib/utils';
+export default function Layout() {
+  const [menu, setMenu] = useState(false);
+  const [search, setSearch] = useState(false);
+  const [term, setTerm] = useState('');
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [mutate, { isLoading }] = useApiMutation();
+  const count = useSelector((s) => s.cart.items.reduce((n, i) => n + i.quantity, 0));
+  const user = useSelector((s) => s.auth.user);
+  const { data: shippingConfig } = useApiQuery({ url: '/shipping' });
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    setMenu(false);
+    setSearch(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
+  useEffect(() => {
+    let live = true;
+    mutate({ url: '/auth/refresh', method: 'POST' })
+      .unwrap()
+      .then((r) => {
+        if (live) dispatch(setCredentials(r.data));
+      })
+      .catch(() => {
+        if (live) dispatch(sessionReady());
+      });
+    return () => {
+      live = false;
+    };
+  }, [dispatch, mutate]);
+  useEffect(() => {
+    if (!user) return;
+    const run = async () => {
+      try {
+        const state = store.getState();
+        const merged = await mutate({
+          url: '/cart/merge',
+          method: 'POST',
+          body: {
+            items: state.cart.items.map((i) => ({
+              productId: i.productId,
+              sku: i.sku,
+              quantity: i.quantity,
+            })),
+            couponCode: state.cart.couponCode,
+          },
+        }).unwrap();
+        if (merged.data?.items)
+          dispatch(
+            replaceCart({
+              ...merged.data,
+              items: merged.data.items.map((i) => ({
+                ...i,
+                productId: i.productId?._id || i.productId,
+              })),
+            }),
+          );
+        for (const p of state.wishlist.items)
+          await mutate({
+            url: '/wishlist/items',
+            method: 'POST',
+            body: { productId: p._id },
+          }).unwrap();
+        const saved = await mutate({ url: '/wishlist', method: 'GET' }).unwrap();
+        const products = saved.data?.productIds || saved.data?.items || saved.data;
+        if (Array.isArray(products))
+          dispatch(replaceWishlist(products.filter((p) => p && typeof p === 'object' && p.slug)));
+      } catch (e) {
+        toast.error(`Couldn’t sync your saved items. ${errorMessage(e)}`);
+      }
+    };
+    run();
+  }, [user?._id, dispatch, mutate]);
+  async function subscribe(e) {
+    e.preventDefault();
+    try {
+      await mutate({ url: '/newsletter', method: 'POST', body: { email } }).unwrap();
+      setSubscribed(true);
+    } catch (e) {
+      toast.error(errorMessage(e));
+    }
+  }
+  return (
+    <>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+      <div className="announcement">
+        A little something for your wardrobe.{' '}
+        <span>
+          {shippingConfig?.data?.freeShippingThreshold != null
+            ? `Free shipping over ${money(shippingConfig.data.freeShippingThreshold)}`
+            : 'Shipping across Egypt'}
+        </span>
+      </div>
+      <header className="site-header">
+        <div className="header-inner">
+          <button
+            className="icon-btn mobile-menu"
+            aria-label="Open navigation"
+            aria-expanded={menu}
+            onClick={() => setMenu(!menu)}
+          >
+            {menu ? <X /> : <Menu />}
+          </button>
+          <nav className="desktop-nav" aria-label="Main navigation">
+            <NavLink to="/products">Shop</NavLink>
+            <NavLink to="/products?sort=newest">New arrivals</NavLink>
+            <NavLink to="/categories">Collections</NavLink>
+          </nav>
+          <Link className="wordmark" to="/" aria-label="LUNA home">
+            LUNA<span>Considered womenswear</span>
+          </Link>
+          <nav className="header-actions" aria-label="Your shopping">
+            <button
+              className="icon-btn"
+              aria-label="Search products"
+              aria-expanded={search}
+              onClick={() => setSearch(!search)}
+            >
+              <Search />
+            </button>
+            <Link
+              className="icon-btn account-icon"
+              to={user ? '/account' : '/login'}
+              aria-label="Your account"
+            >
+              <UserRound />
+            </Link>
+            <Link className="icon-btn" to="/wishlist" aria-label="Wishlist">
+              <Heart />
+            </Link>
+            <Link
+              className="icon-btn bag-link"
+              to="/cart"
+              aria-label={`Shopping bag, ${count} items`}
+            >
+              <ShoppingBag />
+              {count > 0 ? <span className="bag-count">{count}</span> : null}
+            </Link>
+          </nav>
+        </div>
+        {menu ? (
+          <nav className="mobile-nav" aria-label="Mobile navigation">
+            <Link to="/products">Shop all</Link>
+            <Link to="/products?sort=newest">New arrivals</Link>
+            <Link to="/categories">Collections</Link>
+            <Link to="/account">My account</Link>
+            <Link to="/contact">Contact</Link>
+          </nav>
+        ) : null}
+        {search ? (
+          <form
+            className="search-bar container"
+            noValidate
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigate(`/products?search=${encodeURIComponent(term)}`);
+              setSearch(false);
+            }}
+          >
+            <label className="sr-only" htmlFor="site-search">
+              Search products
+            </label>
+            <Search size={18} />
+            <input
+              id="site-search"
+              autoFocus
+              value={term}
+              onChange={(e) => setTerm(e.target.value)}
+              placeholder="Find your next favourite"
+            />
+            {term ? (
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label="Clear search"
+                onClick={() => setTerm('')}
+              >
+                <X size={18} />
+              </button>
+            ) : null}
+            <button className="text-link" type="submit">
+              Search
+            </button>
+          </form>
+        ) : null}
+      </header>
+      <main id="main-content">
+        <Outlet />
+      </main>
+      <section className="service-strip container" aria-label="Shopping services">
+        <div>
+          <Truck />
+          <span>
+            Delivered across Egypt<small>Shipping calculated at checkout</small>
+          </span>
+        </div>
+        <div>
+          <RotateCcw />
+          <span>
+            A considered purchase<small>Read our returns policy</small>
+          </span>
+        </div>
+        <div>
+          <ShieldCheck />
+          <span>
+            Shop with confidence<small>Cash on delivery available</small>
+          </span>
+        </div>
+      </section>
+      <section className="newsletter">
+        <div className="container newsletter-inner">
+          <div>
+            <h2>A little LUNA in your inbox.</h2>
+            <p>New collections, styling notes and things worth knowing.</p>
+          </div>
+          <form noValidate onSubmit={subscribe}>
+            {subscribed ? (
+              <p role="status">You’re on the list. Welcome to LUNA.</p>
+            ) : (
+              <>
+                <label className="sr-only" htmlFor="newsletter-email">
+                  Email address
+                </label>
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email address"
+                />
+                <button disabled={isLoading} aria-label="Subscribe to newsletter">
+                  <ArrowRight />
+                </button>
+              </>
+            )}
+          </form>
+        </div>
+      </section>
+      <footer>
+        <div className="container footer-grid">
+          <div>
+            <Link to="/" className="wordmark">
+              LUNA
+            </Link>
+            <p>
+              Thoughtful pieces.
+              <br />
+              Endless possibilities.
+            </p>
+            <Link to="/journal" className="text-link">
+              Our story
+            </Link>
+          </div>
+          <div>
+            <h3>Explore</h3>
+            <Link to="/products">Shop all</Link>
+            <Link to="/products?sort=newest">New arrivals</Link>
+            <Link to="/categories">Collections</Link>
+            <Link to="/products?discount=true">The edit on sale</Link>
+          </div>
+          <div>
+            <h3>Here to help</h3>
+            <Link to="/contact">Contact us</Link>
+            <Link to="/policies/shipping">Shipping & delivery</Link>
+            <Link to="/policies/returns">Returns & exchanges</Link>
+            <Link to="/policies/size-guide">Size guide</Link>
+          </div>
+          <div>
+            <h3>Your LUNA</h3>
+            <Link to="/account">My account</Link>
+            <Link to="/orders">Track an order</Link>
+            <Link to="/wishlist">Wishlist</Link>
+            <Link to="/journal">
+              <Instagram size={14} /> Style journal
+            </Link>
+            {user?.role === 'admin' ? <Link to="/admin">Store administration</Link> : null}
+          </div>
+        </div>
+        <div className="container footer-bottom">
+          <span>© {new Date().getFullYear()} LUNA. All rights reserved.</span>
+          <span>Egypt · EGP</span>
+          <Link to="/policies/privacy">Privacy</Link>
+          <Link to="/policies/terms">Terms</Link>
+        </div>
+      </footer>
+      <Toaster richColors position="bottom-right" closeButton />
+    </>
+  );
+}

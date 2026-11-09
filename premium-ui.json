@@ -1,0 +1,14 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": ["client/src"],
+  "locale": "en-EG",
+  "canonicalMap": "UX-CONTRACT.md",
+  "requiredCapabilities": ["Select/Listbox", "Form", "Scrollbar", "Toast", "CRUD"],
+  "ownership": { "Select/Listbox": "native" },
+  "requiredCommands": ["unit", "e2e"],
+  "commands": { "unit": "npm test", "e2e": "npm run test:e2e" },
+  "evidence": {
+    "crudFullFlow": "tests/e2e/admin.spec.js",
+    "failurePaths": "client/src/test/account.test.jsx"
+  }
+}

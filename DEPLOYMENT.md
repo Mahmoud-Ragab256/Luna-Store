@@ -16,22 +16,22 @@ Configure the static host to serve generated prerendered public pages when avail
 
 The API reads `server/.env` when launched through its workspace scripts. Production should inject environment variables through the deployment secret manager.
 
-| Variable | Purpose |
-| --- | --- |
-| `NODE_ENV` | `production` on deployed API; disables development seeding/payment simulation |
-| `PORT` | API port, default 4000 |
-| `MONGODB_URI` | Replica-set connection URI; production credentials must be private |
-| `CLIENT_ORIGIN` | Exact frontend URL, default `http://localhost:5173`; CORS and CSRF allowlist |
-| `JWT_SECRET` | Stable cryptographically random secret, at least 32 characters; mandatory production setting |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM` | Transactional account email; port 465 uses TLS transport |
-| `CONTACT_EMAIL`, `CONTACT_PHONE` | Store contact details; unset values are not invented |
-| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Administrator image storage; secrets stay on API only |
-| `PAYMENT_PROVIDER` | Default `disabled`; `mock` only for development; no production adapter is currently wired |
-| `MOCK_PAYMENT_WEBHOOK_SECRET` | Development webhook HMAC secret; never reuse production provider secrets |
-| `FREE_SHIPPING_THRESHOLD` | Sample default 2500 EGP |
-| `SHIPPING_EXPRESS_ENABLED`, `SHIPPING_EXPRESS_SURCHARGE` | Optional express method and sample surcharge |
-| `SHIPPING_ZONES_JSON` | Optional JSON array of `{governorate,fee,minDays,maxDays}`; defaults are development store rules |
-| `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` | Development-only admin creation; minimum 12-character password; never shipped defaults |
+| Variable                                                               | Purpose                                                                                          |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `NODE_ENV`                                                             | `production` on deployed API; disables development seeding/payment simulation                    |
+| `PORT`                                                                 | API port, default 4000                                                                           |
+| `MONGODB_URI`                                                          | Replica-set connection URI; production credentials must be private                               |
+| `CLIENT_ORIGIN`                                                        | Exact frontend URL, default `http://localhost:5173`; CORS and CSRF allowlist                     |
+| `JWT_SECRET`                                                           | Stable cryptographically random secret, at least 32 characters; mandatory production setting     |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM`       | Transactional account email; port 465 uses TLS transport                                         |
+| `CONTACT_EMAIL`, `CONTACT_PHONE`                                       | Store contact details; unset values are not invented                                             |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Administrator image storage; secrets stay on API only                                            |
+| `PAYMENT_PROVIDER`                                                     | Default `disabled`; `mock` only for development; no production adapter is currently wired        |
+| `MOCK_PAYMENT_WEBHOOK_SECRET`                                          | Development webhook HMAC secret; never reuse production provider secrets                         |
+| `FREE_SHIPPING_THRESHOLD`                                              | Sample default 2500 EGP                                                                          |
+| `SHIPPING_EXPRESS_ENABLED`, `SHIPPING_EXPRESS_SURCHARGE`               | Optional express method and sample surcharge                                                     |
+| `SHIPPING_ZONES_JSON`                                                  | Optional JSON array of `{governorate,fee,minDays,maxDays}`; defaults are development store rules |
+| `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`                              | Development-only admin creation; minimum 12-character password; never shipped defaults           |
 
 ## MongoDB locally
 
@@ -57,3 +57,7 @@ Without Docker, `npm run dev:database` starts a downloaded real MongoDB replica 
 ## SEO strategy
 
 A client-only SPA is insufficient for reliable product metadata indexing. Preserve the required React/Vite stack and prerender public home/catalog/category/product routes from current MongoDB records, generating unique metadata, product/breadcrumb JSON-LD and a sitemap. Rebuild prerendered output when products change; do not prerender customer/admin/private data. Verify generated files and crawler responses before claiming SEO readiness. The status document records whether prerendering has actually been implemented and executed.
+
+### Generate crawlable public pages
+
+Run the real API against the intended catalog, set `SITE_URL` to the public origin and optionally `PRERENDER_API_URL` (default http://127.0.0.1:4000/api/v1), then run `npm run build:seo` and `node scripts/verify-prerender.js`. Install Playwright Chromium first or set `PLAYWRIGHT_CHANNEL=chrome` for an installed Chrome. This produces public HTML only, product/breadcrumb JSON-LD and sitemap.xml. The Express app serves client/dist; reverse proxies can serve the same files and forward /api. Rebuild after catalog changes. Never point this process at a test database for a production release.

@@ -28,19 +28,17 @@ export const addressSchema = z.object({
   postalCode: z.string().trim().max(15).default(''),
   notes: z.string().trim().max(500).default(''),
 });
-export const checkoutSchema = quoteSchema
-  .omit({ governorate: true })
-  .extend({
-    customer: z.object({
-      name: z.string().trim().min(2).max(100),
-      email: z.string().email().max(254),
-      phone: z
-        .string()
-        .regex(/^(?:\+20|0020|0)1[0125]\d{8}$/, 'Enter a valid Egyptian mobile number'),
-    }),
-    shippingAddress: addressSchema,
-    paymentMethod: z.enum(['cod', 'online']).default('cod'),
-  });
+export const checkoutSchema = quoteSchema.omit({ governorate: true }).extend({
+  customer: z.object({
+    name: z.string().trim().min(2).max(100),
+    email: z.string().email().max(254),
+    phone: z
+      .string()
+      .regex(/^(?:\+20|0020|0)1[0125]\d{8}$/, 'Enter a valid Egyptian mobile number'),
+  }),
+  shippingAddress: addressSchema,
+  paymentMethod: z.enum(['cod', 'online']).default('cod'),
+});
 export const couponSchema = z
   .object({
     code: z

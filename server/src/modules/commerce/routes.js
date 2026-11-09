@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { getPaymentProvider } from '../../integrations/payment/provider.js';
 import { Router } from 'express';
 import { z } from 'zod';
 import { Order, Payment, Coupon, AuditLog } from '../../database/models.js';
@@ -17,6 +17,7 @@ import {
   cancelOrder,
   onlinePaymentsEnabled,
   createPaymentSession,
+  collectCashOnDelivery,
   confirmMockPayment,
   applyPaymentOutcome,
   updateFulfillment,
@@ -212,12 +213,13 @@ commerceRouter.post(
     const secret = process.env.MOCK_PAYMENT_WEBHOOK_SECRET;
     if (!secret) fail(503, 'Development webhook secret is not configured');
     const signature = req.get('x-payment-signature') || '';
-    const expected = createHmac('sha256', secret)
-      .update(req.rawBody || Buffer.from(JSON.stringify(req.body)))
-      .digest('hex');
+    const provider = getPaymentProvider();
     if (
-      !/^[a-f\d]{64}$/i.test(signature) ||
-      !timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expected, 'hex'))
+      !provider.verifyWebhook(
+        req.rawBody || Buffer.from(JSON.stringify(req.body)),
+        signature,
+        secret,
+      )
     )
       fail(401, 'Invalid webhook signature');
     const event = z
@@ -232,7 +234,7 @@ commerceRouter.post(
     const payment = await Payment.findOne({ providerTransactionId: event.providerTransactionId });
     if (!payment || payment.amount !== event.amount) fail(409, 'Payment amount does not match');
     // This development adapter reads independently recorded provider state, not redirect parameters.
-    if (payment.providerStatus !== event.status)
+    if (!(await provider.verifyTransaction(payment, event)))
       fail(409, 'Provider transaction status is not verified');
     ok(res, await applyPaymentOutcome(event.providerTransactionId, event.status, event.eventId));
   }),
@@ -390,5 +392,17 @@ commerceRouter.delete(
     if (!coupon) fail(404, 'Coupon not found');
     await audit(req, 'coupon.archived', coupon._id);
     ok(res, coupon);
+  }),
+);
+
+commerceRouter.post(
+  '/admin/orders/:id/collect-cod',
+  requireAuth,
+  requireAdmin,
+  route(async (req, res) => {
+    objectId.parse(req.params.id);
+    const input = z.object({ confirmed: z.literal(true) }).parse(req.body);
+    if (!input.confirmed) return;
+    ok(res, await collectCashOnDelivery(req.params.id, req.user._id));
   }),
 );

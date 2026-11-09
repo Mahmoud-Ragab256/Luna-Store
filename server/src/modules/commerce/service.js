@@ -1,3 +1,4 @@
+import { getPaymentProvider } from '../../integrations/payment/provider.js';
 import { createHash, randomUUID } from 'node:crypto';
 import mongoose from 'mongoose';
 import {
@@ -7,6 +8,7 @@ import {
   Payment,
   Coupon,
   InventoryReservation,
+  AuditLog,
 } from '../../database/models.js';
 import { calculateShipping } from './shipping.js';
 const fail = (statusCode, message) => {
@@ -205,7 +207,7 @@ export async function updateCartItem(userId, itemId, quantity) {
   return cart;
 }
 export function onlinePaymentsEnabled() {
-  return process.env.NODE_ENV !== 'production' && process.env.PAYMENT_PROVIDER === 'mock';
+  return getPaymentProvider().available;
 }
 
 /** Atomically create snapshots, claim stock, consume a coupon and reserve inventory. */
@@ -399,12 +401,16 @@ export async function createPaymentSession(userId, orderId) {
     order.reservationExpiresAt <= new Date()
   )
     fail(409, 'This order is not awaiting payment');
+  const transaction = await getPaymentProvider().createTransaction({
+    amount: order.total,
+    currency: 'EGP',
+  });
   const payment = await Payment.findOneAndUpdate(
     { orderId: order._id },
     {
       $setOnInsert: {
         provider: 'development-mock',
-        providerTransactionId: `mock_${randomUUID()}`,
+        providerTransactionId: transaction.providerTransactionId,
         amount: order.total,
         currency: 'EGP',
         status: 'pending',
@@ -498,13 +504,58 @@ export async function updateFulfillment(orderId, status) {
     {
       $set: {
         fulfillmentStatus: status,
-        ...(status === 'delivered' && order.paymentMethod === 'cod'
-          ? { paymentStatus: 'paid' }
-          : {}),
       },
     },
     { new: true },
   );
   if (!updated) fail(409, 'Order changed. Refresh and try again.');
   return updated;
+}
+
+/** Record actual COD collection only after delivery; retries cannot double-count payment. */
+export async function collectCashOnDelivery(orderId, adminId) {
+  let result;
+  await mongoose.connection.transaction(async (session) => {
+    const order = await Order.findById(orderId).session(session);
+    if (!order) fail(404, 'Order not found');
+    if (order.paymentMethod !== 'cod')
+      fail(409, 'Only cash-on-delivery orders can be recorded here');
+    if (order.fulfillmentStatus !== 'delivered')
+      fail(409, 'Cash collection can be recorded after delivery');
+    if (order.paymentStatus === 'paid') {
+      result = order;
+      return;
+    }
+    if (order.paymentStatus !== 'pending') fail(409, 'This payment cannot be collected');
+    order.paymentStatus = 'paid';
+    await order.save({ session });
+    await Payment.create(
+      [
+        {
+          orderId: order._id,
+          provider: 'cash-on-delivery',
+          providerTransactionId: 'cod_' + order._id,
+          amount: order.total,
+          currency: 'EGP',
+          status: 'paid',
+          paidAt: new Date(),
+          idempotencyKey: 'cod_' + order._id,
+        },
+      ],
+      { session },
+    );
+    await AuditLog.create(
+      [
+        {
+          userId: adminId,
+          action: 'payment.cod-collected',
+          resource: 'order',
+          resourceId: String(order._id),
+        },
+      ],
+      { session },
+    );
+    result = order;
+  });
+  return result;
 }

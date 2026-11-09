@@ -1,0 +1,218 @@
+{
+  "schemaVersion": "uizze.visual-evidence.v1",
+  "scope": "LUNA English-only Luxury Minimal storefront; desktop and mobile homepage and keyboard quick view",
+  "platform": "web",
+  "sources": [
+    {
+      "path": "../client/src/api/baseApi.js",
+      "sha256": "2910291e991974a6f112f9964b21ef57232151c64c0d27c06b8861303e2d8cc0"
+    },
+    {
+      "path": "../client/src/app/router.jsx",
+      "sha256": "45ab026051fa30fc6423a0eada37140126c40c74360fbf99b73d7c2d5292e645"
+    },
+    {
+      "path": "../client/src/app/store.js",
+      "sha256": "dc06726018477106faf2ec62b572db404cd1571f50ccfae087114541a1933835"
+    },
+    {
+      "path": "../client/src/components/common/Dialog.jsx",
+      "sha256": "45f2c7f0114c06e8c64b5a3e8b207fc1e38288c51deb77dcbc8606d7ae2e9658"
+    },
+    {
+      "path": "../client/src/components/common/Status.jsx",
+      "sha256": "640e0601cb50a501d5c1e58b26e84257980bc5659353c3047a701402079504e1"
+    },
+    {
+      "path": "../client/src/components/layout/Layout.jsx",
+      "sha256": "c5b6d3992003aa1c0cab554cc24f98559785dcb977e0ce5f2c834afba5f7100f"
+    },
+    {
+      "path": "../client/src/components/products/ProductCard.jsx",
+      "sha256": "0bde4fd8019f099444c99f34104a3a7d3a7a9d3b21d50876cbb414ce83f4182b"
+    },
+    {
+      "path": "../client/src/features/auth/authSlice.js",
+      "sha256": "d998b31c3d67ab055b5522537c737493679ba69007c5c52fe7fcb9e9f5fa1495"
+    },
+    {
+      "path": "../client/src/features/cart/cartSlice.js",
+      "sha256": "6607ea7f9d6ebfe9e5684d3bde9449b1210bb62b836891fd4b45d8c1dd915325"
+    },
+    {
+      "path": "../client/src/features/wishlist/wishlistSlice.js",
+      "sha256": "fdf8fbdb91f854a96313b2eba069d316534a61dd9878a070e1d75b9ac6ef3512"
+    },
+    {
+      "path": "../client/src/lib/utils.js",
+      "sha256": "a9eaffc9a5a1a10af7618637fc3a4150add7d84b84e0f264d33207ceb6aa7ffd"
+    },
+    {
+      "path": "../client/src/main.jsx",
+      "sha256": "1b609b401b744ae929651f0ee1e28cf81db828eca21c4c3d83fdbc6c810e9dd1"
+    },
+    {
+      "path": "../client/src/pages/AccountPages.jsx",
+      "sha256": "0f4128ba8ad47dce35f9b7cf78621ba4fdaddfb2ab394662b23b3d4fd72792dd"
+    },
+    {
+      "path": "../client/src/pages/AdminPages.jsx",
+      "sha256": "9c8889ed6386c5d9eca184c9a6f21548ee838c929e3a1c50a99e59bbc768a2f4"
+    },
+    {
+      "path": "../client/src/pages/ContentPages.jsx",
+      "sha256": "02230d618d00bb33aa676645d9915fa55d465bd04ef5a4b9a8f869f74059d36e"
+    },
+    {
+      "path": "../client/src/pages/Home.jsx",
+      "sha256": "e0945c946e3ce1be768123acf64e0fe3ccf2bc955f3d0df668c0c5894b834e92"
+    },
+    {
+      "path": "../client/src/pages/ProductDetails.jsx",
+      "sha256": "a7b63170392d096b627d4292a93d879ed886e60d7cef1a109d53d6bed707479a"
+    },
+    {
+      "path": "../client/src/pages/Products.jsx",
+      "sha256": "730dd814c121809760b6b35e8756d6e4cafdce2ce2fede2fbcac24208cdf71bd"
+    },
+    {
+      "path": "../client/src/styles/index.css",
+      "sha256": "8b9994a455513ed290bd8186571a573bc4f5b2711a638816833c90bd6691a48e"
+    },
+    {
+      "path": "../client/src/test/account.test.jsx",
+      "sha256": "f00333196d37a75882a9e8a69bb5c736ca8a059d81a3360b87613cc04be298f3"
+    },
+    {
+      "path": "../client/src/test/setup.js",
+      "sha256": "91a3c8962a0edcb956206a501d943fe99e1c78c6d4d8b5c9a948a3362c75978c"
+    },
+    {
+      "path": "../client/public/images/catalog/fashion-1.jpg",
+      "sha256": "bd7a870a6dfe1247d8cb102272b5cc351ea9b4725a1500b1b84fd55646a9f68a"
+    },
+    {
+      "path": "../client/public/images/catalog/fashion-2.jpg",
+      "sha256": "81f7fd3268974a823f8e6373422c5474783a4ac346c0a607cad8ee7cc4ecd7c9"
+    },
+    {
+      "path": "../client/public/images/catalog/fashion-3.jpg",
+      "sha256": "5357c4701c3f3828d1aa6d069cf1320939d685f114119e45e520f548a8bff9dd"
+    },
+    {
+      "path": "../client/public/images/catalog/fashion-4.jpg",
+      "sha256": "11303a5df67a920a5df758a35c25861ab1e620326fd076231fe1630181791c05"
+    },
+    {
+      "path": "../client/public/images/catalog/fashion-5.jpg",
+      "sha256": "5181ce41f6d9dec762988e9657cd18340295e0d7bb7f8dec97b613290a798ca9"
+    },
+    {
+      "path": "../client/public/images/catalog/fashion-6.jpg",
+      "sha256": "5bb4ac29b8448f1b722e96f2c79d5e1c0ec9af302d518cbbbe018414684709bf"
+    },
+    {
+      "path": "../client/public/images/catalog/fashion-7.jpg",
+      "sha256": "8aefae7585b28e96799c42117e695ed1242bb1a3ebd4d694234af2cd8a3fbb33"
+    },
+    {
+      "path": "../client/public/images/catalog/fashion-8.jpg",
+      "sha256": "81f7fd3268974a823f8e6373422c5474783a4ac346c0a607cad8ee7cc4ecd7c9"
+    },
+    {
+      "path": "../client/public/images/luna-hero.png",
+      "sha256": "6ac900deacd169d11a7ea0680685dff8058a5324a54de6ab1d78e4a58e763c49"
+    },
+    {
+      "path": "../client/public/images/product-placeholder.svg",
+      "sha256": "8110bead2791a59b740c1c5a35f05e34b8a9e341054da183b21543e17bd12768"
+    },
+    {
+      "path": "../client/index.html",
+      "sha256": "707a3b6a77a2cf7d648ceb201d0a33ff6f6a432c4cfc62c606a2945d217d4567"
+    }
+  ],
+  "comparison": "existing-system",
+  "requiredChecks": [
+    {
+      "id": "desktop",
+      "kind": "visual"
+    },
+    {
+      "id": "mobile",
+      "kind": "visual"
+    },
+    {
+      "id": "keyboard",
+      "kind": "interaction"
+    }
+  ],
+  "checks": [
+    {
+      "id": "desktop",
+      "status": "pass",
+      "state": "Loaded public homepage",
+      "environment": {
+        "kind": "browser",
+        "name": "Chrome",
+        "width": 1440,
+        "height": 1000
+      },
+      "observed": "English LTR, Playfair Display/Inter typography, local photographs loaded, no horizontal overflow.",
+      "artifacts": [
+        {
+          "path": "home-desktop-viewport.png",
+          "kind": "image",
+          "sha256": "62393d0250246adc1f84e6a4ead8ed04508d74bb56ea1b98fd3684e5caa0eb7f"
+        }
+      ]
+    },
+    {
+      "id": "mobile",
+      "status": "pass",
+      "state": "Loaded public homepage",
+      "environment": {
+        "kind": "browser",
+        "name": "Chrome",
+        "width": 390,
+        "height": 844
+      },
+      "observed": "English LTR, Playfair Display/Inter typography, local photographs loaded, no horizontal overflow.",
+      "artifacts": [
+        {
+          "path": "home-mobile-viewport.png",
+          "kind": "image",
+          "sha256": "543ce369458394b12c25660f5be7d0dd3c03c525104d13cae6b3e24f01cf0d5e"
+        }
+      ]
+    },
+    {
+      "id": "keyboard",
+      "status": "pass",
+      "state": "Quick-view dialog keyboard cycle",
+      "environment": {
+        "kind": "browser",
+        "name": "Chrome",
+        "width": 1440,
+        "height": 1000
+      },
+      "observed": "Enter opens native modal; Escape dismisses and returns focus to trigger. Reduced-motion media preference exercised.",
+      "steps": [
+        "Focus Quick view",
+        "Press Enter",
+        "Capture open dialog",
+        "Press Escape",
+        "Verify trigger focus",
+        "Enable reduced motion"
+      ],
+      "artifacts": [
+        {
+          "path": "quick-view-keyboard.png",
+          "kind": "image",
+          "sha256": "f21cc07c7c9cf39cd14835f1e3c6cf18ac4dd257aaef34f10bc2a9249acea0df"
+        }
+      ]
+    }
+  ],
+  "unresolved": []
+}

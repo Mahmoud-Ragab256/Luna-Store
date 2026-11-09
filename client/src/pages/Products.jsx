@@ -1,2 +1,271 @@
-import { useEffect,useState } from 'react';import {useParams,useSearchParams,Link} from 'react-router-dom';import {Search,X,SlidersHorizontal,ChevronLeft,ChevronRight} from 'lucide-react';import {useApiQuery} from '../api/baseApi';import ProductCard from '../components/products/ProductCard';import {Loading,ErrorState,EmptyState} from '../components/common/Status';
-export default function Products(){const {slug}=useParams();const [params,setParams]=useSearchParams();const [search,setSearch]=useState(params.get('search')||'');const [composing,setComposing]=useState(false);const [filters,setFilters]=useState(false);const query=Object.fromEntries(params);if(slug)query.category=slug;query.limit=12;const {data,isLoading,isFetching,error,refetch}=useApiQuery({url:'/products',params:query});const {data:categories}=useApiQuery({url:'/categories'});const cats=categories?.data||[];const active=cats.find(c=>c.slug===slug);useEffect(()=>{if(composing||search===(params.get('search')||''))return;const timer=setTimeout(()=>setParams(current=>{const next=new URLSearchParams(current);search?next.set('search',search):next.delete('search');next.delete('page');return next;},{replace:true}),300);return ()=>clearTimeout(timer);},[search,composing,params,setParams]);useEffect(()=>{setSearch(params.get('search')||'');},[params.get('search')]);function change(key,value){setParams(current=>{const next=new URLSearchParams(current);value?next.set(key,value):next.delete(key);if(key!=='page')next.delete('page');return next;});}const products=data?.data||[];const meta=data?.meta||{};const page=Number(params.get('page')||1);const pages=meta.totalPages||meta.pages||Math.ceil((meta.total||0)/12)||1;return <div className="container catalog-page"><nav className="breadcrumb"><Link to="/">Home</Link><span>/</span><span>{active?.name||'Shop all'}</span></nav><div className="catalog-title"><div><h1>{active?.name||'Your everyday, elevated.'}</h1><p>{active?.description||'Discover pieces to love now, and wear on repeat.'}</p></div><span>{meta.total??products.length} pieces</span></div><div className="catalog-toolbar"><button className="filter-toggle" onClick={()=>setFilters(!filters)} aria-expanded={filters}><SlidersHorizontal size={17}/> Filters</button><div className="catalog-search"><Search size={17}/><label className="sr-only" htmlFor="catalog-search">Search products</label><input id="catalog-search" value={search} placeholder="Search the collection" onCompositionStart={()=>setComposing(true)} onCompositionEnd={()=>setComposing(false)} onChange={e=>setSearch(e.target.value)}/>{search?<button className="icon-btn" aria-label="Clear search" onClick={()=>{setSearch('');change('search','');}}><X size={16}/></button>:null}</div><label className="sort-select">Sort by <select value={params.get('sort')||'newest'} onChange={e=>change('sort',e.target.value)}><option value="newest">Newest first</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="popularity">Most popular</option><option value="rating">Top rated</option></select></label></div><div className="catalog-layout"><aside className={`filter-sidebar ${filters?'open':''}`}><div className="filter-heading"><h2>Refine your edit</h2><button className="text-link" onClick={()=>{setParams({});setSearch('');}}>Clear all</button></div><fieldset><legend>Category</legend><label className="filter-radio"><input type="radio" name="category" checked={!query.category} onChange={()=>change('category','')}/>All pieces</label>{cats.map(c=><label className="filter-radio" key={c._id}><input type="radio" name="category" checked={query.category===c.slug} onChange={()=>change('category',c.slug)}/>{c.name}</label>)}</fieldset><fieldset><legend>Price range · EGP</legend><div className="price-inputs"><label><span>From</span><input type="number" min="0" value={params.get('minPrice')||''} onChange={e=>change('minPrice',e.target.value)} placeholder="0"/></label><label><span>To</span><input type="number" min="0" value={params.get('maxPrice')||''} onChange={e=>change('maxPrice',e.target.value)} placeholder="5000"/></label></div></fieldset><fieldset><legend>Size</legend><div className="size-filters">{['XS','S','M','L','XL','XXL','One size'].map(s=><button key={s} className={params.get('size')===s?'selected':''} aria-pressed={params.get('size')===s} onClick={()=>change('size',params.get('size')===s?'':s)}>{s}</button>)}</div></fieldset><fieldset><legend>Colour</legend>{['Ivory','Black','Beige','Rose','Blue','White','Olive','Brown'].map(c=><label key={c} className="filter-radio"><input type="checkbox" checked={params.get('color')===c} onChange={()=>change('color',params.get('color')===c?'':c)}/>{c}</label>)}</fieldset><fieldset><legend>Availability</legend><label className="filter-radio"><input type="checkbox" checked={params.get('inStock')==='true'} onChange={e=>change('inStock',e.target.checked?'true':'')}/>In stock only</label><label className="filter-radio"><input type="checkbox" checked={params.get('discount')==='true'} onChange={e=>change('discount',e.target.checked?'true':'')}/>On sale</label></fieldset></aside><div className="catalog-results" aria-busy={isFetching}>{isLoading?<Loading count={6}/>:error?<ErrorState error={error} retry={refetch}/>:products.length?<><div className={`product-grid catalog-grid ${isFetching?'updating':''}`}>{products.map(p=><ProductCard key={p._id} product={p}/>)}</div><nav className="pagination" aria-label="Product pages"><button className="icon-btn" disabled={page<=1} onClick={()=>change('page',String(page-1))} aria-label="Previous page"><ChevronLeft size={18}/></button><span>Page {page} of {pages}</span><button className="icon-btn" disabled={page>=pages} onClick={()=>change('page',String(page+1))} aria-label="Next page"><ChevronRight size={18}/></button></nav></>:<EmptyState title="No pieces found." description="Try a different search or clear a few filters."/>}</div></div></div>;}
+import { useEffect, useState } from 'react';
+import { useParams, useSearchParams, Link } from 'react-router-dom';
+import { Search, X, SlidersHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useApiQuery } from '../api/baseApi';
+import ProductCard from '../components/products/ProductCard';
+import { Loading, ErrorState, EmptyState } from '../components/common/Status';
+export default function Products() {
+  const { slug } = useParams();
+  const [params, setParams] = useSearchParams();
+  const [search, setSearch] = useState(params.get('search') || '');
+  const [composing, setComposing] = useState(false);
+  const [filters, setFilters] = useState(false);
+  const query = Object.fromEntries(params);
+  if (slug) query.category = slug;
+  query.limit = 12;
+  const { data, isLoading, isFetching, error, refetch } = useApiQuery({
+    url: '/products',
+    params: query,
+  });
+  const { data: categories } = useApiQuery({ url: '/categories' });
+  const cats = categories?.data || [];
+  const active = cats.find((c) => c.slug === slug);
+  useEffect(() => {
+    if (composing || search === (params.get('search') || '')) return;
+    const timer = setTimeout(
+      () =>
+        setParams(
+          (current) => {
+            const next = new URLSearchParams(current);
+            search ? next.set('search', search) : next.delete('search');
+            next.delete('page');
+            return next;
+          },
+          { replace: true },
+        ),
+      300,
+    );
+    return () => clearTimeout(timer);
+  }, [search, composing, params, setParams]);
+  useEffect(() => {
+    setSearch(params.get('search') || '');
+  }, [params.get('search')]);
+  function change(key, value) {
+    setParams((current) => {
+      const next = new URLSearchParams(current);
+      value ? next.set(key, value) : next.delete(key);
+      if (key !== 'page') next.delete('page');
+      return next;
+    });
+  }
+  const products = data?.data || [];
+  const meta = data?.meta || {};
+  const page = Number(params.get('page') || 1);
+  const pages = meta.totalPages || meta.pages || Math.ceil((meta.total || 0) / 12) || 1;
+  return (
+    <div className="container catalog-page">
+      <nav className="breadcrumb">
+        <Link to="/">Home</Link>
+        <span>/</span>
+        <span>{active?.name || 'Shop all'}</span>
+      </nav>
+      <div className="catalog-title">
+        <div>
+          <h1>{active?.name || 'Your everyday, elevated.'}</h1>
+          <p>{active?.description || 'Discover pieces to love now, and wear on repeat.'}</p>
+        </div>
+        <span>{meta.total ?? products.length} pieces</span>
+      </div>
+      <div className="catalog-toolbar">
+        <button
+          className="filter-toggle"
+          onClick={() => setFilters(!filters)}
+          aria-expanded={filters}
+        >
+          <SlidersHorizontal size={17} /> Filters
+        </button>
+        <div className="catalog-search">
+          <Search size={17} />
+          <label className="sr-only" htmlFor="catalog-search">
+            Search products
+          </label>
+          <input
+            id="catalog-search"
+            value={search}
+            placeholder="Search the collection"
+            onCompositionStart={() => setComposing(true)}
+            onCompositionEnd={() => setComposing(false)}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {search ? (
+            <button
+              className="icon-btn"
+              aria-label="Clear search"
+              onClick={() => {
+                setSearch('');
+                change('search', '');
+              }}
+            >
+              <X size={16} />
+            </button>
+          ) : null}
+        </div>
+        <label className="sort-select">
+          Sort by{' '}
+          <select
+            value={params.get('sort') || 'newest'}
+            onChange={(e) => change('sort', e.target.value)}
+          >
+            <option value="newest">Newest first</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+            <option value="popularity">Most popular</option>
+            <option value="rating">Top rated</option>
+          </select>
+        </label>
+      </div>
+      <div className="catalog-layout">
+        <aside className={`filter-sidebar ${filters ? 'open' : ''}`}>
+          <div className="filter-heading">
+            <h2>Refine your edit</h2>
+            <button
+              className="text-link"
+              onClick={() => {
+                setParams({});
+                setSearch('');
+              }}
+            >
+              Clear all
+            </button>
+          </div>
+          <fieldset>
+            <legend>Category</legend>
+            <label className="filter-radio">
+              <input
+                type="radio"
+                name="category"
+                checked={!query.category}
+                onChange={() => change('category', '')}
+              />
+              All pieces
+            </label>
+            {cats.map((c) => (
+              <label className="filter-radio" key={c._id}>
+                <input
+                  type="radio"
+                  name="category"
+                  checked={query.category === c.slug}
+                  onChange={() => change('category', c.slug)}
+                />
+                {c.name}
+              </label>
+            ))}
+          </fieldset>
+          <fieldset>
+            <legend>Price range · EGP</legend>
+            <div className="price-inputs">
+              <label>
+                <span>From</span>
+                <input
+                  type="number"
+                  min="0"
+                  value={params.get('minPrice') || ''}
+                  onChange={(e) => change('minPrice', e.target.value)}
+                  placeholder="0"
+                />
+              </label>
+              <label>
+                <span>To</span>
+                <input
+                  type="number"
+                  min="0"
+                  value={params.get('maxPrice') || ''}
+                  onChange={(e) => change('maxPrice', e.target.value)}
+                  placeholder="5000"
+                />
+              </label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Size</legend>
+            <div className="size-filters">
+              {['XS', 'S', 'M', 'L', 'XL', 'XXL', 'One size'].map((s) => (
+                <button
+                  key={s}
+                  className={params.get('size') === s ? 'selected' : ''}
+                  aria-pressed={params.get('size') === s}
+                  onClick={() => change('size', params.get('size') === s ? '' : s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Colour</legend>
+            {['Ivory', 'Black', 'Beige', 'Rose', 'Blue', 'White', 'Olive', 'Brown'].map((c) => (
+              <label key={c} className="filter-radio">
+                <input
+                  type="checkbox"
+                  checked={params.get('color') === c}
+                  onChange={() => change('color', params.get('color') === c ? '' : c)}
+                />
+                {c}
+              </label>
+            ))}
+          </fieldset>
+          <fieldset>
+            <legend>Availability</legend>
+            <label className="filter-radio">
+              <input
+                type="checkbox"
+                checked={params.get('inStock') === 'true'}
+                onChange={(e) => change('inStock', e.target.checked ? 'true' : '')}
+              />
+              In stock only
+            </label>
+            <label className="filter-radio">
+              <input
+                type="checkbox"
+                checked={params.get('discount') === 'true'}
+                onChange={(e) => change('discount', e.target.checked ? 'true' : '')}
+              />
+              On sale
+            </label>
+          </fieldset>
+        </aside>
+        <div className="catalog-results" aria-busy={isFetching}>
+          {isLoading ? (
+            <Loading count={6} />
+          ) : error ? (
+            <ErrorState error={error} retry={refetch} />
+          ) : products.length ? (
+            <>
+              <div className={`product-grid catalog-grid ${isFetching ? 'updating' : ''}`}>
+                {products.map((p) => (
+                  <ProductCard key={p._id} product={p} />
+                ))}
+              </div>
+              <nav className="pagination" aria-label="Product pages">
+                <button
+                  className="icon-btn"
+                  disabled={page <= 1}
+                  onClick={() => change('page', String(page - 1))}
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <span>
+                  Page {page} of {pages}
+                </span>
+                <button
+                  className="icon-btn"
+                  disabled={page >= pages}
+                  onClick={() => change('page', String(page + 1))}
+                  aria-label="Next page"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </nav>
+            </>
+          ) : (
+            <EmptyState
+              title="No pieces found."
+              description="Try a different search or clear a few filters."
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

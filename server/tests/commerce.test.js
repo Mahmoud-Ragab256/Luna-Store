@@ -1,3 +1,4 @@
+import { getPaymentProvider } from '../src/integrations/payment/provider.js';
 import { beforeAll, afterAll, beforeEach, describe, it, expect } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
@@ -21,6 +22,8 @@ import {
   cancelOrder,
   expireReservations,
   createPaymentSession,
+  collectCashOnDelivery,
+  updateFulfillment,
   confirmMockPayment,
   mergeCart,
 } from '../src/modules/commerce/service.js';
@@ -269,4 +272,48 @@ describe('payment and reservation lifecycle', () => {
     expect((await Order.findById(order._id)).paymentStatus).toBe('paid');
     expect((await Product.findById(product._id)).variants[0].stock).toBe(9);
   });
+});
+
+it('records collected COD once after delivery and rejects premature collection', async () => {
+  const input = checkoutSchema.parse({
+    items: [{ productId: String(product._id), sku: product.variants[0].sku, quantity: 1 }],
+    customer: { name: 'Customer One', email: 'one@example.test', phone: '01012345678' },
+    shippingAddress: {
+      governorate: 'Cairo',
+      city: 'Cairo',
+      street: '12 Test Street',
+      building: '12',
+    },
+    shippingMethod: 'standard',
+    paymentMethod: 'cod',
+  });
+  const order = await createOrder(user._id, input, randomUUID());
+  await expect(collectCashOnDelivery(order._id, user._id)).rejects.toThrow('after delivery');
+  await Order.updateOne({ _id: order._id }, { $set: { fulfillmentStatus: 'delivered' } });
+  await Promise.all([
+    collectCashOnDelivery(order._id, user._id),
+    collectCashOnDelivery(order._id, user._id),
+  ]);
+  expect((await Order.findById(order._id)).paymentStatus).toBe('paid');
+  expect(await Payment.countDocuments({ orderId: order._id })).toBe(1);
+});
+it('rejects customer attempts to record collected cash', async () => {
+  const result = await request(app)
+    .post('/api/v1/admin/orders/507f1f77bcf86cd799439011/collect-cod')
+    .set('Origin', 'http://localhost:5173')
+    .set('Authorization', `Bearer ${token}`)
+    .send({ confirmed: true });
+  expect(result.status).toBe(403);
+});
+
+it('cannot enable the development payment adapter in production', () => {
+  const environment = process.env.NODE_ENV;
+  try {
+    process.env.NODE_ENV = 'production';
+    process.env.PAYMENT_PROVIDER = 'mock';
+    expect(getPaymentProvider().available).toBe(false);
+    expect(getPaymentProvider().name).toBe('disabled');
+  } finally {
+    process.env.NODE_ENV = environment;
+  }
 });

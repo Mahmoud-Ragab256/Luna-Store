@@ -1,0 +1,379 @@
+{
+  "pages": 62,
+  "productPages": 40,
+  "sitemap": "pass",
+  "checks": [
+    {
+      "path": "client\\dist\\categories\\accessories\\index.html",
+      "h1": "Accessories",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\activewear\\index.html",
+      "h1": "Activewear",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\blouses\\index.html",
+      "h1": "Blouses",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\dresses\\index.html",
+      "h1": "Dresses",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\index.html",
+      "h1": "A little of everything you love.",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\jackets\\index.html",
+      "h1": "Jackets",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\jeans\\index.html",
+      "h1": "Jeans",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\knitwear\\index.html",
+      "h1": "Knitwear",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\pants\\index.html",
+      "h1": "Pants",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\sets\\index.html",
+      "h1": "Sets",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\skirts\\index.html",
+      "h1": "Skirts",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\t-shirts\\index.html",
+      "h1": "T-Shirts",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\categories\\tops\\index.html",
+      "h1": "Tops",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\contact\\index.html",
+      "h1": "Let’s talk.",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\index.html",
+      "h1": "A softer kindof statement.",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\journal\\index.html",
+      "h1": "Room to be yourself.",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\policies\\privacy\\index.html",
+      "h1": "Privacy",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\policies\\returns\\index.html",
+      "h1": "Returns & exchanges",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\policies\\shipping\\index.html",
+      "h1": "Shipping & delivery",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\policies\\size-guide\\index.html",
+      "h1": "Size guide",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\policies\\terms\\index.html",
+      "h1": "Terms of service",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\essential-soft-tee\\index.html",
+      "h1": "Essential Soft Tee",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\everyday-cotton-shirt\\index.html",
+      "h1": "Everyday Cotton Shirt",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\index.html",
+      "h1": "Your everyday, elevated.",
+      "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-asymmetric-top\\index.html",
+      "h1": "The Asymmetric Top",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-boxy-cotton-tee\\index.html",
+      "h1": "The Boxy Cotton Tee",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-city-co-ord\\index.html",
+      "h1": "The City Co-Ord",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-classic-blue-jean\\index.html",
+      "h1": "The Classic Blue Jean",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-cotton-day-dress\\index.html",
+      "h1": "The Cotton Day Dress",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-cropped-denim-jacket\\index.html",
+      "h1": "The Cropped Denim Jacket",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-evening-slip-dress\\index.html",
+      "h1": "The Evening Slip Dress",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-everyday-tote\\index.html",
+      "h1": "The Everyday Tote",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-fine-knit-cardigan\\index.html",
+      "h1": "The Fine-Knit Cardigan",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-fluid-wide-leg-pant\\index.html",
+      "h1": "The Fluid Wide-Leg Pant",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-gathered-blouse\\index.html",
+      "h1": "The Gathered Blouse",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-linen-midi-dress\\index.html",
+      "h1": "The Linen Midi Dress",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-linen-pull-on-pant\\index.html",
+      "h1": "The Linen Pull-On Pant",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-linen-wrap-skirt\\index.html",
+      "h1": "The Linen Wrap Skirt",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-movement-short\\index.html",
+      "h1": "The Movement Short",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-pleated-maxi-skirt\\index.html",
+      "h1": "The Pleated Maxi Skirt",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-poplin-tie-blouse\\index.html",
+      "h1": "The Poplin Tie Blouse",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-relaxed-blazer\\index.html",
+      "h1": "The Relaxed Blazer",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-relaxed-linen-blouse\\index.html",
+      "h1": "The Relaxed Linen Blouse",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-ribbed-tank\\index.html",
+      "h1": "The Ribbed Tank",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-satin-midi-skirt\\index.html",
+      "h1": "The Satin Midi Skirt",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-signature-crew-tee\\index.html",
+      "h1": "The Signature Crew Tee",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-silk-feel-scarf\\index.html",
+      "h1": "The Silk-Feel Scarf",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-soft-drape-blouse\\index.html",
+      "h1": "The Soft Drape Blouse",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-soft-lounge-set\\index.html",
+      "h1": "The Soft Lounge Set",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-soft-ribbed-knit\\index.html",
+      "h1": "The Soft Ribbed Knit",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-square-neck-top\\index.html",
+      "h1": "The Square-Neck Top",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-straight-leg-jean\\index.html",
+      "h1": "The Straight-Leg Jean",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-studio-legging\\index.html",
+      "h1": "The Studio Legging",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-studio-zip-top\\index.html",
+      "h1": "The Studio Zip Top",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-tailored-trouser\\index.html",
+      "h1": "The Tailored Trouser",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-textured-sweater\\index.html",
+      "h1": "The Textured Sweater",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-trench-jacket\\index.html",
+      "h1": "The Trench Jacket",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-weekend-linen-set\\index.html",
+      "h1": "The Weekend Linen Set",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-weekend-tee\\index.html",
+      "h1": "The Weekend Tee",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-wide-leg-jean\\index.html",
+      "h1": "The Wide-Leg Jean",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-woven-shoulder-bag\\index.html",
+      "h1": "The Woven Shoulder Bag",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\the-wrap-maxi-dress\\index.html",
+      "h1": "The Wrap Maxi Dress",
+      "product": true,
+      "status": "pass"
+    }
+  ]
+}

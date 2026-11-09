@@ -4,37 +4,37 @@ Base path: `/api/v1`. JSON successes use `{ "data": ... }` with optional `meta`.
 
 ## Authentication
 
-| Method | Path | Request / purpose |
-| --- | --- | --- |
-| POST | `/auth/register` | `{name,email,password}`; password minimum 10 characters; creates customer only |
-| POST | `/auth/login` | `{email,password}` |
-| POST | `/auth/refresh` | Rotates the HttpOnly cookie; send allowed Origin and credentials |
-| POST | `/auth/logout` | Revokes current refresh session and clears its cookie |
-| GET | `/auth/me` | Current public user; bearer token required |
-| POST | `/auth/forgot-password` | `{email}`; generic response protects account existence |
-| POST | `/auth/reset-password` | `{token,password}`; single-use token |
-| POST | `/auth/verify-email` | `{token}`; single-use token |
+| Method | Path                    | Request / purpose                                                              |
+| ------ | ----------------------- | ------------------------------------------------------------------------------ |
+| POST   | `/auth/register`        | `{name,email,password}`; password minimum 10 characters; creates customer only |
+| POST   | `/auth/login`           | `{email,password}`                                                             |
+| POST   | `/auth/refresh`         | Rotates the HttpOnly cookie; send allowed Origin and credentials               |
+| POST   | `/auth/logout`          | Revokes current refresh session and clears its cookie                          |
+| GET    | `/auth/me`              | Current public user; bearer token required                                     |
+| POST   | `/auth/forgot-password` | `{email}`; generic response protects account existence                         |
+| POST   | `/auth/reset-password`  | `{token,password}`; single-use token                                           |
+| POST   | `/auth/verify-email`    | `{token}`; single-use token                                                    |
 
 Register, login and refresh return `data: {user,accessToken}`. Use `Authorization: Bearer <accessToken>` for protected endpoints. Refresh/logout must include the exact configured frontend Origin for cookie-authenticated writes. Browser cross-site mutation requests are rejected. Reset/verification links carry tokens in the URL fragment.
 
 ## Catalog and configuration
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/health` | Database-aware readiness (503 when disconnected) |
-| GET | `/config` | Configurable contact details and enabled payment information |
-| GET | `/shipping` | Governorates, fees, free shipping threshold and express availability |
-| GET | `/categories` | Active categories in display order |
-| GET | `/categories/:slug` | Active category |
-| GET | `/products` | Active product list |
-| GET | `/products/featured` | Featured products |
-| GET | `/products/new-arrivals` | Newest products |
-| GET | `/products/best-sellers` | Sorted by stored sales count |
-| GET | `/products/:slug` | Active product, images and variants |
-| GET | `/products/:productId/reviews` | Approved reviews; accepts product ID or slug |
-| POST | `/products/:productId/reviews` | Authenticated `{rating,comment}`; delivered-order purchase required |
-| POST | `/contact` | `{name,email,subject,message,website?}`; honeypot `website` must remain empty |
-| POST | `/newsletter` | `{email}`; stores newsletter consent |
+| Method | Path                           | Purpose                                                                       |
+| ------ | ------------------------------ | ----------------------------------------------------------------------------- |
+| GET    | `/health`                      | Database-aware readiness (503 when disconnected)                              |
+| GET    | `/config`                      | Configurable contact details and enabled payment information                  |
+| GET    | `/shipping`                    | Governorates, fees, free shipping threshold and express availability          |
+| GET    | `/categories`                  | Active categories in display order                                            |
+| GET    | `/categories/:slug`            | Active category                                                               |
+| GET    | `/products`                    | Active product list                                                           |
+| GET    | `/products/featured`           | Featured products                                                             |
+| GET    | `/products/new-arrivals`       | Newest products                                                               |
+| GET    | `/products/best-sellers`       | Sorted by stored sales count                                                  |
+| GET    | `/products/:slug`              | Active product, images and variants                                           |
+| GET    | `/products/:productId/reviews` | Approved reviews; accepts product ID or slug                                  |
+| POST   | `/products/:productId/reviews` | Authenticated `{rating,comment}`; delivered-order purchase required           |
+| POST   | `/contact`                     | `{name,email,subject,message,website?}`; honeypot `website` must remain empty |
+| POST   | `/newsletter`                  | `{email}`; stores newsletter consent                                          |
 
 Product query parameters: `search` (or `q`), `category` slug, `subcategory`, `minPrice`, `maxPrice`, `size`, `color`, `availability=in-stock`, `inStock=true`, `discount=true`, `featured=true`, `sort`, `page`, `limit`. Sort accepts `newest`, `price-asc`, `price-desc`, `popularity`, `rating`. Page size is capped at 60. Monetary fields are EGP decimal amounts. Price filtering/sorting uses the displayed discounted catalog price (`catalogPrice`); checkout uses the selected variant's current discounted price, including an optional SKU price override.
 
@@ -42,20 +42,20 @@ Product query parameters: `search` (or `q`), `category` slug, `subcategory`, `mi
 
 All require a bearer token.
 
-| Method | Path | Request / purpose |
-| --- | --- | --- |
-| GET/PATCH | `/users/me` | Read/update `{name,phone}` |
-| PATCH | `/users/me/password` | `{currentPassword,newPassword}`; revokes all sessions |
-| POST | `/users/me/addresses` | Address fields; maximum ten saved addresses |
-| DELETE | `/users/me/addresses/:id` | Remove saved address |
-| GET | `/wishlist` | Active saved products |
-| POST | `/wishlist/items` | `{productId}` |
-| DELETE | `/wishlist/items/:productId` | Remove saved product |
-| GET | `/cart` | Stored product/variant/quantity selections |
-| POST | `/cart/items` | `{productId,variantSku,quantity}`; additive |
-| POST | `/cart/merge` | `{items,couponCode?}`; repeatable maximum-quantity merge |
-| PATCH | `/cart/items/:itemId` | `{quantity}` from 1 to 20 |
-| DELETE | `/cart/items/:itemId` | Remove line |
+| Method    | Path                         | Request / purpose                                        |
+| --------- | ---------------------------- | -------------------------------------------------------- |
+| GET/PATCH | `/users/me`                  | Read/update `{name,phone}`                               |
+| PATCH     | `/users/me/password`         | `{currentPassword,newPassword}`; revokes all sessions    |
+| POST      | `/users/me/addresses`        | Address fields; maximum ten saved addresses              |
+| DELETE    | `/users/me/addresses/:id`    | Remove saved address                                     |
+| GET       | `/wishlist`                  | Active saved products                                    |
+| POST      | `/wishlist/items`            | `{productId}`                                            |
+| DELETE    | `/wishlist/items/:productId` | Remove saved product                                     |
+| GET       | `/cart`                      | Stored product/variant/quantity selections               |
+| POST      | `/cart/items`                | `{productId,variantSku,quantity}`; additive              |
+| POST      | `/cart/merge`                | `{items,couponCode?}`; repeatable maximum-quantity merge |
+| PATCH     | `/cart/items/:itemId`        | `{quantity}` from 1 to 20                                |
+| DELETE    | `/cart/items/:itemId`        | Remove line                                              |
 
 `POST /cart/quote` is public and accepts `{items,couponCode?,governorate?,shippingMethod?}`. It returns authoritative resolved lines, subtotal, coupon discount, shipping and total. Empty carts are handled in the UI; quoting an empty list returns 422.
 
@@ -65,12 +65,20 @@ All require a bearer token.
 
 ```json
 {
-  "items": [{"productId":"<MongoDB ObjectId>","variantSku":"LUNA-001-0-M","quantity":1}],
-  "customer":{"name":"Customer name","email":"customer@example.test","phone":"01012345678"},
-  "shippingAddress":{"governorate":"Cairo","city":"Cairo","street":"Street address","building":"12","apartment":"3","postalCode":"","notes":""},
-  "shippingMethod":"standard",
-  "paymentMethod":"cod",
-  "couponCode":""
+  "items": [{ "productId": "<MongoDB ObjectId>", "variantSku": "LUNA-001-0-M", "quantity": 1 }],
+  "customer": { "name": "Customer name", "email": "customer@example.test", "phone": "01012345678" },
+  "shippingAddress": {
+    "governorate": "Cairo",
+    "city": "Cairo",
+    "street": "Street address",
+    "building": "12",
+    "apartment": "3",
+    "postalCode": "",
+    "notes": ""
+  },
+  "shippingMethod": "standard",
+  "paymentMethod": "cod",
+  "couponCode": ""
 }
 ```
 
@@ -102,4 +110,10 @@ Every admin route requires both bearer authentication and the database-backed ad
 - `/admin/orders/:id/refund`: POST returns 501 until real provider refund support exists; it does not fabricate a refund.
 - `/admin/coupons`: GET/POST; `/:id` PATCH/DELETE (disable).
 
-Products require unique slug, category ID, HTTPS image URLs, positive base price, and bounded SKU variants. Duplicate global SKUs and duplicate slugs return 409. Coupon types are `percentage` and `fixed`; usage limits are claimed atomically during checkout.
+Products require unique slug, category ID, HTTPS image URLs or safe local /images/ raster paths, positive base price, and bounded SKU variants. Duplicate global SKUs and duplicate slugs return 409. Coupon types are `percentage` and `fixed`; usage limits are claimed atomically during checkout.
+
+### Received cash on delivery
+
+`POST /admin/orders/:id/collect-cod` requires admin authorization and `{ "confirmed": true }`. The order must be COD and delivered. Delivery alone never marks payment paid. The server records one payment and audit transition in a transaction; retries are idempotent. The UI requires confirmation that the full cash amount has actually been received.
+
+Payment adapter contract: `server/src/integrations/payment/provider.js` exports create/verify-webhook/verify-transaction/refund behavior. Unknown or unconfigured providers remain unavailable, including `PAYMENT_PROVIDER=mock` in production.

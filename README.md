@@ -1,6 +1,6 @@
 # LUNA — Women's Fashion Store
 
-An English-language, Egypt-focused fashion storefront with a separate React/Vite application and Express/MongoDB API. Prices are displayed in Egyptian pounds. The application uses real MongoDB records, server-calculated checkout totals, transactional inventory allocation and authenticated order history.
+An English-only, LTR, Luxury Minimal, Egypt-focused fashion storefront with a separate React/Vite application and Express/MongoDB API. Prices are displayed in Egyptian pounds. Headings use Playfair Display and interface text uses Inter. The application uses real MongoDB records, server-calculated checkout totals, transactional inventory allocation and authenticated order history.
 
 ## Stack
 
@@ -55,6 +55,8 @@ npm run lint
 npm test                       # backend + frontend tests
 npm run test:e2e               # Playwright, see TESTING.md
 npm run build                  # Vite production build
+npm run build:seo              # public prerender + sitemap; requires running API
+node scripts/verify-prerender.js
 npm run start -w server        # API only
 ```
 
@@ -84,3 +86,9 @@ tests/                         browser end-to-end tests
 Read [DEPLOYMENT.md](DEPLOYMENT.md) for topology, environment configuration, database transactions and launch requirements. [PROJECT_STATUS.md](PROJECT_STATUS.md) records verified results and remaining limitations; the existence of a route does not establish production readiness.
 
 Further documentation: [architecture](ARCHITECTURE.md), [API](API_DOCUMENTATION.md), [database](DATABASE_SCHEMA.md), [security](SECURITY.md), [testing](TESTING.md), [design](DESIGN.md).
+
+## Verified update
+
+24 backend tests, 10 component tests and 6 Chrome E2E workflows passed. See PROJECT_STATUS.md for exact scope and external-service limitations. The English/LTR update preserves COD and the development online-payment provider. To enable the labeled simulator locally, set `PAYMENT_PROVIDER=mock` with `NODE_ENV=development`; it is always disabled in production.
+
+For browser tests using installed Chrome in PowerShell: `$env:PLAYWRIGHT_CHANNEL='chrome'; npm run test:e2e`. Clean machines may use the bundled Playwright Chromium install. On this Windows workspace an optional ignored `.local/mongodb/mongod.exe` is reused automatically; other machines download MongoDB normally.
