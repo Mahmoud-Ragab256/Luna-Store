@@ -58,3 +58,5 @@ E2E uses separate ports 5180/4100 and isolated databases, avoiding changes to th
 - Brevo will use SMTP, not Resend. Render and Resend are outside the deployment plan.
 - The UI skill static audit again timed out in its parser after 20 seconds. `artifacts/premium-audit-run.json` records this; no compliance pass is claimed.
 - Generated public SEO HTML is local build evidence, not a deployed feature. The deployed build must preserve or regenerate these pages and use the actual assigned production origin.
+
+Automatic Git-triggered deployment c60a874 failed during the Linux build because the lockfile lacked @rollup/rollup-linux-x64-gnu. A matching optional-dependency lockfile fix has been prepared and locally built; remote verification follows. A successful build alone will not mean the API has its deployment credentials.

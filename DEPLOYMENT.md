@@ -77,3 +77,5 @@ Cloudinary photos have been uploaded through MCP and the catalog uses their publ
 Use `DEMO_MODE=true node scripts/seed-demo.js` with a securely injected MONGODB_URI for non-destructive demo catalog initialization. It creates indexes and missing catalog records only, and never imports fake customer reviews. It saves a newly generated admin credential only in ignored `.runtime/demo-admin.json`.
 
 Deployment remains pending explicit approval for the credential transfer and removal of Vercel's SSO gate described in PROJECT_STATUS.md. Do not claim a public live demo before its health, account, COD and simulated-payment flows pass against the actual deployment. No paid hosting upgrade is authorized or needed for the current preparation.
+
+Cross-platform build note: the first automatic Vercel build found a missing Rollup Linux native module in the Windows-generated lockfile. The matching @rollup/rollup-linux-x64-gnu version is now recorded as an explicit optional dependency. Keep this version aligned with Rollup when updating Vite. See upstream npm/cli issue 4828.
