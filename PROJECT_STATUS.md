@@ -47,20 +47,18 @@ Normal development storefront: http://localhost:5173. API: http://localhost:4000
 
 E2E uses separate ports 5180/4100 and isolated databases, avoiding changes to the local development shop. See TESTING.md and README.md.
 
-## Hosted demo preparation ? 10 November
+## Hosted deployment status ? 10 November
 
-- Created Atlas database `luna`, model indexes, 40 products and 12 categories with Cloudinary image URLs. No fictitious customer reviews were imported. Two explicitly fictional integration-check orders were created: COD was canceled and online payment was simulated; no money was charged.
-- Prepared one Vercel application with React static output and the existing Express API (`api/index.js`), MongoDB connection reuse, same-origin routing and a protected daily maintenance route. Daily scheduling is compatible with Hobby; request-time expiry keeps checkout from depending on a daily sweep. A faster external scheduler can call the protected route for timely email retry.
-- Created Vercel project `luna-store` (`prj_cqI6UPbgzfx424xIYdlJJYPcmaMP`), selected Node 22. No completed Vercel deployment or public URL is claimed.
-- Automatic approval review rejected two operations: transferring the existing MongoDB connection credential into Vercel environment variables, and disabling the new project's Vercel SSO deployment protection. The actual production alias is already public, so disabling SSO is unnecessary and will not be retried. Explicit user approval is required before saving the runtime secrets. Neither rejection was bypassed. DEMO_MODE, CLIENT_ORIGIN, VITE_SITE_URL, VITE_DEMO_MODE and PAYMENT_PROVIDER are configured remotely. MONGODB_URI, JWT_SECRET and CRON_SECRET still require secure configuration.
-- Local production build is available at http://localhost:4399 while its process runs. The hosted demo banner labels orders/payments as test-only. English editorial and policy text describe the demonstration honestly; no physical fulfillment is offered.
-- Random demo administrator credentials are saved only in ignored `.runtime/demo-admin.json`; no default password is committed.
-- Brevo will use SMTP, not Resend. Render and Resend are outside the deployment plan.
-- The UI skill static audit again timed out in its parser after 20 seconds. `artifacts/premium-audit-run.json` records this; no compliance pass is claimed.
-- Generated public SEO HTML is local build evidence, not a deployed feature. The deployed build must preserve or regenerate these pages and use the actual assigned production origin.
-
-Automatic Git-triggered deployment c60a874 failed during the Linux build because the lockfile lacked @rollup/rollup-linux-x64-gnu. A matching optional-dependency lockfile fix has been prepared and locally built; remote verification follows. A successful build alone will not mean the API has its deployment credentials.
-
-Vercel Linux build verification: commit caa8281 reached READY at deployment dpl_8EA2BzJMD64TP8NhDiXRGPNS4366. Assigned alias: https://luna-store-peach.vercel.app. This is a successful build, not a validated functional public demo: The production alias responds publicly (HTTP 200), while /api/v1/health returns HTTP 500 because required runtime secrets remain unconfigured. Project SSO settings were not changed. No deployed API health or deployed checkout pass is claimed. The earlier Rollup/CSS native-module build errors were corrected with matching optional Linux binaries.
-
-Final access verification: https://luna-store-peach.vercel.app/ returned HTTP 200 without authentication; /api/v1/health returned HTTP 500. Automatic approval review separately rejected setting JWT_SECRET and CRON_SECRET as well as the earlier MONGODB_URI transfer. A specific approval request for these three encrypted Vercel environment variables is pending. No protection bypass or alternative credential-transfer path was used.
+- Created Atlas database `luna`, indexes, 40 products and 12 categories with seven Cloudinary demo images. No fictitious customer reviews were imported.
+- Local production smoke checks against Atlas passed registration, COD pending status, COD cancellation and simulated online payment. Two fictional orders were retained as demo evidence; no money was charged. Images loaded successfully (31/31 image elements) and desktop/mobile screenshots are in artifacts/.
+- Created Vercel project `luna-store`, selected Node 22 and fixed the Windows lockfile's missing Linux binaries for Rollup, Lightning CSS, Tailwind Oxide and esbuild. The actual Linux build succeeded.
+- After explicit user approval, MONGODB_URI, JWT_SECRET and CRON_SECRET were successfully stored as encrypted Vercel variables. Metadata was verified without decrypting or printing values. CLIENT_ORIGIN and VITE_SITE_URL use https://luna-store-peach.vercel.app. No Vercel SSO setting was changed.
+- Deployment dpl_SeQXowAsjGNeYp3xHUHWbX7vv4FH (commit fa4e3dc) is READY. The public frontend responds HTTP 200. API health responds HTTP 503: this is NOT yet a functional full-stack live demo.
+- Vercel runtime diagnostics show MongooseServerSelectionError, ReplicaSetNoPrimary and MongoNetworkError with ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR for all Atlas members. Local Atlas access succeeds. Atlas project IP access rules are the leading suspected cause, not a confirmed diagnosis. The existing browser session is signed out of Atlas, and the connected MongoDB tools cannot manage Atlas network rules. No network rule was opened and TLS verification was not weakened.
+- The remaining deployment step is to inspect/fix Atlas Network Access for Vercel, then rerun deployed health/account/COD/simulated-payment checks. No deployed checkout pass is claimed.
+- Brevo will use SMTP. Sender verification and SMTP credentials remain pending. Cloudinary public catalog images work; runtime administrator uploads and cleanup still need the separate Cloudinary SDK credentials.
+- The protected daily maintenance route handles bounded work. Hosted email retries more frequent than daily require a suitable scheduler; immediate delivery is attempted for account/order requests when SMTP is configured.
+- Random demo administrator credentials are stored only in ignored `.runtime/demo-admin.json`; no password was committed or printed.
+- The UI skill audit again timed out in its parser after 20 seconds. `artifacts/premium-audit-run.json` records this; no static compliance pass is claimed.
+- Local public SEO HTML verification passed for 62 pages and 40 product schemas. A production SEO rebuild must use the final origin and be preserved by deployment; local SEO evidence is not a deployed SEO pass.
+- Render, Resend, real payments and a custom domain are outside the agreed demo scope. No paid hosting upgrade was enabled.

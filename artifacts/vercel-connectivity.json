@@ -1,0 +1,13 @@
+{
+  "frontend": "https://luna-store-peach.vercel.app",
+  "frontendStatus": 200,
+  "apiHealthStatus": 503,
+  "deployment": "dpl_SeQXowAsjGNeYp3xHUHWbX7vv4FH",
+  "runtimeSecretsConfigured": true,
+  "runtimeSecretsEncrypted": true,
+  "databaseError": "MongooseServerSelectionError",
+  "topology": "ReplicaSetNoPrimary",
+  "causeCode": "ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR",
+  "networkAccessInspected": false,
+  "deployedCheckoutVerified": false
+}
