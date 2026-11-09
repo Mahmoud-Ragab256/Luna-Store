@@ -76,6 +76,6 @@ Cloudinary photos have been uploaded through MCP and the catalog uses their publ
 
 Use `DEMO_MODE=true node scripts/seed-demo.js` with a securely injected MONGODB_URI for non-destructive demo catalog initialization. It creates indexes and missing catalog records only, and never imports fake customer reviews. It saves a newly generated admin credential only in ignored `.runtime/demo-admin.json`.
 
-Deployment remains pending explicit approval for the credential transfer and removal of Vercel's SSO gate described in PROJECT_STATUS.md. Do not claim a public live demo before its health, account, COD and simulated-payment flows pass against the actual deployment. No paid hosting upgrade is authorized or needed for the current preparation.
+Deployment runtime remains pending explicit approval to store MONGODB_URI, JWT_SECRET and CRON_SECRET as encrypted Vercel variables. The actual production alias is already publicly readable, so no SSO setting change is needed. Do not claim a public live demo before its health, account, COD and simulated-payment flows pass against the actual deployment. No paid hosting upgrade is authorized or needed for the current preparation.
 
 Cross-platform build note: the first automatic Vercel build found a missing Rollup Linux native module in the Windows-generated lockfile. Matching Linux binaries for Rollup, Lightning CSS, Tailwind Oxide and esbuild are recorded as explicit optional dependencies. Keep their exact versions aligned with their parent packages when updating Vite/Tailwind. See upstream npm/cli issue 4828.
