@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { getPaymentProvider } from '../../integrations/payment/provider.js';
 import mongoose from 'mongoose';
 import { z } from 'zod';
 import { rateLimit } from 'express-rate-limit';
@@ -167,7 +168,8 @@ catalogRouter.get(['/config', '/store/config'], (req, res) =>
     data: {
       contactEmail: env.CONTACT_EMAIL || null,
       contactPhone: env.CONTACT_PHONE || null,
-      onlinePaymentsEnabled: env.NODE_ENV !== 'production' && env.PAYMENT_PROVIDER === 'mock',
+      onlinePaymentsEnabled: getPaymentProvider().available,
+      demoMode: env.DEMO_MODE === 'true',
       currency: 'EGP',
     },
   }),

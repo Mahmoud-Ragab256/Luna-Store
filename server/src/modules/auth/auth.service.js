@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { User, Session } from '../../database/models.js';
 import { env } from '../../config/env.js';
 import { AppError } from '../../common/errors/app-error.js';
-import { sendAccountEmail } from '../../integrations/email/email.service.js';
+import { queueAccountEmail as sendAccountEmail } from '../../integrations/email/outbox.service.js';
 import { logger } from '../../config/logger.js';
 export const hashToken = (token) => createHash('sha256').update(token).digest('hex');
 export const publicUser = (user) => ({
@@ -46,7 +46,7 @@ export async function register(input, device) {
     verifyTokenHash: hashToken(verificationToken),
     verifyExpiresAt: new Date(Date.now() + 86400000),
   });
-  sendAccountEmail(
+  await sendAccountEmail(
     user.email,
     'Verify your LUNA email',
     `Verify your email: ${env.CLIENT_ORIGIN}/verify-email#token=${verificationToken}`,

@@ -1,4 +1,6 @@
 import { getPaymentProvider } from '../../integrations/payment/provider.js';
+import { enqueueEmail, deliverEmailOutbox } from '../../integrations/email/outbox.service.js';
+import { logger } from '../../config/logger.js';
 import { createHash, randomUUID } from 'node:crypto';
 import mongoose from 'mongoose';
 import {
@@ -212,6 +214,7 @@ export function onlinePaymentsEnabled() {
 
 /** Atomically create snapshots, claim stock, consume a coupon and reserve inventory. */
 export async function createOrder(userId, rawInput, idempotencyKey) {
+  await expireReservations();
   const input = { ...rawInput, items: normalizeItems(rawInput.items) };
   const requestHash = createHash('sha256').update(JSON.stringify(input)).digest('hex');
   const existing = await Order.findOne({ userId, idempotencyKey });
@@ -299,6 +302,15 @@ export async function createOrder(userId, rawInput, idempotencyKey) {
         { $set: { items: [], couponCode: '' }, $inc: { __v: 1 } },
         { session },
       );
+      await enqueueEmail(
+        {
+          key: `order:${order._id}:received`,
+          to: input.customer.email,
+          subject: `LUNA order ${order.orderNumber} received`,
+          text: `Thank you for your order, ${input.customer.name}.\n\nOrder: ${order.orderNumber}\nTotal: EGP ${quote.total.toFixed(2)}\nPayment: ${input.paymentMethod === 'cod' ? 'Cash on delivery; payment pending collection' : 'Online payment simulation; no money will be charged'}\n\nTrack your order: ${process.env.CLIENT_ORIGIN || 'http://localhost:5173'}/orders/${order._id}`,
+        },
+        session,
+      );
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -308,6 +320,9 @@ export async function createOrder(userId, rawInput, idempotencyKey) {
     }
     throw error;
   }
+  await deliverEmailOutbox({ limit: 1 }).catch(() =>
+    logger.warn('Order email remains queued for retry.'),
+  );
   return order;
 }
 export async function findOwnedOrder(userId, orderId, session = null) {

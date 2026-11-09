@@ -17,8 +17,10 @@ import { usersRouter } from './modules/users/routes.js';
 import { catalogRouter } from './modules/catalog/routes.js';
 import { adminRouter } from './modules/admin/routes.js';
 import { commerceRouter } from './modules/commerce/routes.js';
+import { maintenanceRouter } from './modules/maintenance/routes.js';
 export const app = express();
 app.disable('x-powered-by');
+if (process.env.VERCEL) app.set('trust proxy', 1);
 app.use(
   helmet({
     strictTransportSecurity: false,
@@ -88,7 +90,8 @@ app.use('/api/v1/users', usersRouter);
 app.use('/api/v1', catalogRouter);
 app.use('/api/v1', commerceRouter);
 app.use('/api/v1/admin', adminRouter);
-if (env.NODE_ENV === 'production') {
+app.use('/api/v1/internal', maintenanceRouter);
+if (env.NODE_ENV === 'production' && !process.env.VERCEL) {
   const clientDirectory = fileURLToPath(new URL('../../client/dist/', import.meta.url));
   app.use(express.static(clientDirectory));
   app.get('/{*path}', (req, res, next) => {

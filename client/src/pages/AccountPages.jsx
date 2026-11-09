@@ -1048,7 +1048,7 @@ function CheckoutContent() {
                   <strong>Online payment</strong>
                   <small>
                     {onlineEnabled
-                      ? 'Continue to the secure payment provider after placing your order'
+                      ? 'Test payment only. No money will be charged.'
                       : 'Currently unavailable. Please choose cash on delivery.'}
                   </small>
                 </span>
@@ -1386,10 +1386,10 @@ function PaymentContent() {
         <button className="btn" onClick={start} disabled={state.isLoading}>
           Continue to secure payment
         </button>
-        {import.meta.env.DEV && (session?.provider === 'mock' || session?.developmentOnly) && (
+        {(session?.provider === 'mock' || session?.developmentOnly) && (
           <div className="notice">
-            <h2>Development payment simulator</h2>
-            <p>No money will be charged. This simulator is unavailable in production.</p>
+            <h2>Test payment simulator</h2>
+            <p>No money will be charged. This is a demonstration payment only.</p>
             <button className="btn" disabled={state.isLoading} onClick={() => mock('paid')}>
               Simulate successful payment
             </button>

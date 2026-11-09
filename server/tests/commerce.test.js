@@ -15,6 +15,8 @@ import {
   Payment,
   Coupon,
   InventoryReservation,
+  EmailJob,
+  MediaAsset,
 } from '../src/database/models.js';
 import {
   createOrder,
@@ -30,6 +32,8 @@ import {
 import { checkoutSchema } from '../src/modules/commerce/validation.js';
 import { env } from '../src/config/env.js';
 import jwt from 'jsonwebtoken';
+import { enqueueEmail, deliverEmailOutbox } from '../src/integrations/email/outbox.service.js';
+import { cleanupUnusedImages } from '../src/integrations/media/cleanup.service.js';
 
 let mongo, user, otherUser, product, token;
 const models = [
@@ -42,6 +46,8 @@ const models = [
   Payment,
   Coupon,
   InventoryReservation,
+  EmailJob,
+  MediaAsset,
 ];
 beforeAll(async () => {
   mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
@@ -56,6 +62,7 @@ beforeEach(async () => {
   await Promise.all(models.map((model) => model.deleteMany({})));
   delete process.env.PAYMENT_PROVIDER;
   delete process.env.MOCK_PAYMENT_WEBHOOK_SECRET;
+  delete process.env.DEMO_MODE;
   [user, otherUser] = await User.create([
     { name: 'Customer One', email: 'one@example.test', passwordHash: 'test-hash' },
     { name: 'Customer Two', email: 'two@example.test', passwordHash: 'test-hash' },
@@ -316,4 +323,104 @@ it('cannot enable the development payment adapter in production', () => {
   } finally {
     process.env.NODE_ENV = environment;
   }
+});
+
+it('allows the payment simulator in an explicitly opted-in hosted demo only', () => {
+  const previous = process.env.NODE_ENV;
+  try {
+    process.env.NODE_ENV = 'production';
+    process.env.PAYMENT_PROVIDER = 'mock';
+    process.env.DEMO_MODE = 'true';
+    expect(getPaymentProvider().available).toBe(true);
+    expect(getPaymentProvider().developmentOnly).toBe(true);
+    process.env.DEMO_MODE = 'false';
+    expect(getPaymentProvider().available).toBe(false);
+  } finally {
+    process.env.NODE_ENV = previous;
+    delete process.env.DEMO_MODE;
+  }
+});
+
+it('queues one acknowledgement atomically across idempotent order retries', async () => {
+  const key = randomUUID();
+  const first = await createOrder(user._id, input(), key);
+  await createOrder(user._id, input(), key);
+  const jobs = await EmailJob.find({ key: `order:${first._id}:received` });
+  expect(jobs).toHaveLength(1);
+  expect(jobs[0].to).toBe(input().customer.email);
+  expect(jobs[0].text).toContain('payment pending collection');
+});
+
+it('retries failed mail durably and prevents concurrent duplicate sends', async () => {
+  await enqueueEmail({
+    key: 'retry-example',
+    to: 'customer@example.test',
+    subject: 'Order received',
+    text: 'Your order is saved.',
+  });
+  const failed = await deliverEmailOutbox({
+    send: async () => {
+      throw new Error('provider down');
+    },
+  });
+  expect(failed.failed).toBe(1);
+  const waiting = await EmailJob.findOne({ key: 'retry-example' });
+  expect(waiting.status).toBe('pending');
+  expect(waiting.attempts).toBe(1);
+  let sent = 0;
+  const send = async () => {
+    sent++;
+    return { delivered: true };
+  };
+  await Promise.all([
+    deliverEmailOutbox({ send, now: new Date(waiting.availableAt.getTime() + 1) }),
+    deliverEmailOutbox({ send, now: new Date(waiting.availableAt.getTime() + 1) }),
+  ]);
+  expect(sent).toBe(1);
+  expect((await EmailJob.findById(waiting._id)).status).toBe('sent');
+});
+
+it('protects maintenance even when its secret is missing', async () => {
+  delete process.env.CRON_SECRET;
+  expect((await request(app).get('/api/v1/internal/maintenance')).status).toBe(401);
+  process.env.CRON_SECRET = 'maintenance-test-secret';
+  try {
+    expect(
+      (await request(app).get('/api/v1/internal/maintenance').set('Authorization', 'Bearer wrong'))
+        .status,
+    ).toBe(401);
+    const accepted = await request(app)
+      .get('/api/v1/internal/maintenance')
+      .set('Authorization', 'Bearer maintenance-test-secret');
+    expect(accepted.status).toBe(200);
+    expect(accepted.body.data.email.configured).toBe(false);
+  } finally {
+    delete process.env.CRON_SECRET;
+  }
+});
+
+it('cleans only old application-owned images with no catalog or order references', async () => {
+  const old = new Date(Date.now() - 8 * 86400000);
+  const usedUrl = 'https://res.cloudinary.com/example/image/upload/used.jpg';
+  await Product.updateOne({ _id: product._id }, { $set: { images: [usedUrl] } });
+  await MediaAsset.create([
+    { publicId: 'used', url: usedUrl, createdAt: old },
+    {
+      publicId: 'orphan',
+      url: 'https://res.cloudinary.com/example/image/upload/orphan.jpg',
+      createdAt: old,
+    },
+    { publicId: 'recent', url: 'https://res.cloudinary.com/example/image/upload/recent.jpg' },
+  ]);
+  const removed = [];
+  const result = await cleanupUnusedImages({
+    destroy: async (id) => {
+      removed.push(id);
+      return { result: 'ok' };
+    },
+  });
+  expect(result.deleted).toBe(1);
+  expect(removed).toEqual(['orphan']);
+  expect((await MediaAsset.findOne({ publicId: 'used' })).status).toBe('active');
+  expect((await MediaAsset.findOne({ publicId: 'recent' })).status).toBe('active');
 });

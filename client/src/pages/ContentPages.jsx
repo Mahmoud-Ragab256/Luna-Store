@@ -144,8 +144,8 @@ export function Contact() {
         <aside className="contact-aside">
           <h2>A personal touch.</h2>
           <p>
-            Use the form to reach the LUNA team. Contact details and opening hours appear here once
-            configured by the store.
+            Need help choosing a size or checking an order? Leave your details and order number in
+            the form. This demonstration store does not ship physical products.
           </p>
           {info.contactEmail ? (
             <a href={`mailto:${info.contactEmail}`}>{info.contactEmail}</a>
@@ -197,9 +197,9 @@ export function Journal() {
           silhouettes and thoughtful details.
         </p>
         <p>
-          This is a development storefront. The catalogue, photography and sample reviews illustrate
-          the shopping experience; final commercial product information must be reviewed by the
-          store before launch.
+          Explore our concept collection: linen-inspired layers, easy cotton essentials and softly
+          tailored shapes. Product images are styling inspiration for this demonstration store,
+          rather than photographs of goods available for dispatch.
         </p>
         <Link className="btn" to="/products">
           Find your everyday favourites
@@ -217,15 +217,15 @@ export function Policy() {
     ],
     returns: [
       'Returns & exchanges',
-      'Contact the store through our contact form with your order number to request a return or exchange. Final eligibility, time limits, refund terms and statutory notices must be configured and legally reviewed before commercial launch.',
+      'This demonstration store does not dispatch goods or collect online payments, so no physical return is needed. You can cancel an eligible test order from My orders. For help, use the contact form and include your order number. Commercial returns and exchange terms will be published before real sales begin.',
     ],
     privacy: [
       'Privacy',
-      'Your account, delivery details and order history are stored to operate this shop. Passwords and refresh tokens are hashed; payment card details are never stored here. Contact the store for access or deletion requests. A reviewed privacy notice and retention schedule are required before launch.',
+      'LUNA stores the account details, addresses, orders and messages you choose to submit. Use fictional delivery details when exploring this demo. Passwords and refresh tokens are hashed; card details are never requested or stored. Session cookies keep you signed in, and browser storage remembers your bag and wishlist. Our hosting, database, image and email providers process the information needed to operate these features. Use the contact form to request access, correction or deletion of your information. Do not submit sensitive personal information.',
     ],
     terms: [
       'Terms of service',
-      'This development store is not yet a live commercial service. Product information, shipping and returns terms, business identity and consumer notices require store approval and legal review before accepting real orders.',
+      'LUNA is a demonstration fashion storefront. Catalog prices are in Egyptian pounds and illustrate the shopping experience. Orders, stock levels, shipping estimates and online payment results are simulated; no goods are dispatched and no online money is collected. Cash on delivery is demonstrated as an order workflow only. Please use fictional delivery details. Do not enter card information. You may explore the collection, create an account and test the shopping flows without making a commercial purchase.',
     ],
     'size-guide': [
       'Size guide',

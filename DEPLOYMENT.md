@@ -61,3 +61,19 @@ A client-only SPA is insufficient for reliable product metadata indexing. Preser
 ### Generate crawlable public pages
 
 Run the real API against the intended catalog, set `SITE_URL` to the public origin and optionally `PRERENDER_API_URL` (default http://127.0.0.1:4000/api/v1), then run `npm run build:seo` and `node scripts/verify-prerender.js`. Install Playwright Chromium first or set `PLAYWRIGHT_CHANNEL=chrome` for an installed Chrome. This produces public HTML only, product/breadcrumb JSON-LD and sitemap.xml. The Express app serves client/dist; reverse proxies can serve the same files and forward /api. Rebuild after catalog changes. Never point this process at a test database for a production release.
+
+## Vercel demo deployment
+
+The root `vercel.json` builds `client/dist`, sends `/api/*` to `api/index.js`, and preserves SPA navigation. The handler connects to Atlas using a reused, bounded Mongoose pool before delegating to the existing Express app. No permanent Node listener or in-process timer runs on Vercel.
+
+Required hosting variables: `NODE_ENV=production`, `MONGODB_URI` pointing to the `luna` database, a private random `JWT_SECRET`, `CLIENT_ORIGIN` matching the actual assigned public URL, and a random `CRON_SECRET`. The current demo additionally requires `DEMO_MODE=true`, `PAYMENT_PROVIDER=mock` and build variable `VITE_DEMO_MODE=true`. Never set demo flags for a real commercial store.
+
+The daily maintenance endpoint is `/api/v1/internal/maintenance`, authenticated with `Authorization: Bearer <CRON_SECRET>`. It processes bounded work: expired reservations, one queued email and one old unused application-tracked image. New checkouts also expire stale reservations. For retries faster than daily, configure a scheduler appropriate to the hosting plan. Email delivery is at least once: SMTP acceptance followed by a process crash can cause duplicate delivery; no exactly-once guarantee is claimed.
+
+Brevo SMTP: host `smtp-relay.brevo.com`, port `465`, SMTP login and SMTP key (not the REST API key), and an approved `EMAIL_FROM` sender. Store these as SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS and EMAIL_FROM. Sender/domain authentication is completed in Brevo. The application queues order acknowledgements and account emails and attempts delivery during relevant requests; failed deliveries remain durable for retry.
+
+Cloudinary photos have been uploaded through MCP and the catalog uses their public HTTPS URLs. Runtime admin uploads and cleanup use the backend SDK and require the three CLOUDINARY_* values separately. OAuth access granted to an assistant's MCP is not the application's API secret.
+
+Use `DEMO_MODE=true node scripts/seed-demo.js` with a securely injected MONGODB_URI for non-destructive demo catalog initialization. It creates indexes and missing catalog records only, and never imports fake customer reviews. It saves a newly generated admin credential only in ignored `.runtime/demo-admin.json`.
+
+Deployment remains pending explicit approval for the credential transfer and removal of Vercel's SSO gate described in PROJECT_STATUS.md. Do not claim a public live demo before its health, account, COD and simulated-payment flows pass against the actual deployment. No paid hosting upgrade is authorized or needed for the current preparation.

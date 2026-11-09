@@ -205,7 +205,7 @@ test('development online payment is labeled and only server verification confirm
   await expect(page.getByRole('heading', { name: 'Personal details' })).toBeVisible();
   await page.goto(`/payment/${order._id}`);
   await page.getByRole('button', { name: 'Continue to secure payment' }).click();
-  await expect(page.getByRole('heading', { name: 'Development payment simulator' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Test payment simulator' })).toBeVisible();
   await page.getByRole('button', { name: 'Simulate successful payment' }).click();
   await expect(page.getByRole('heading', { name: 'Payment confirmed' })).toBeVisible();
   const status = await request.get(`${api}/payments/${order._id}/status`, {

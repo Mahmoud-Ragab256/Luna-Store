@@ -51,7 +51,8 @@ const mock = {
   },
 };
 export function getPaymentProvider() {
-  return process.env.NODE_ENV !== 'production' && process.env.PAYMENT_PROVIDER === 'mock'
+  return (process.env.NODE_ENV !== 'production' || process.env.DEMO_MODE === 'true') &&
+    process.env.PAYMENT_PROVIDER === 'mock'
     ? mock
     : disabled;
 }

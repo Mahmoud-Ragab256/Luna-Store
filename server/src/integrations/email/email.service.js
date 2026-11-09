@@ -13,6 +13,9 @@ export async function sendAccountEmail(to, subject, text) {
     host: env.SMTP_HOST,
     port: Number(env.SMTP_PORT || 587),
     secure: Number(env.SMTP_PORT) === 465,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 20000,
     auth: env.SMTP_USER ? { user: env.SMTP_USER, pass: env.SMTP_PASS } : undefined,
   });
   await transport.sendMail({ from: env.EMAIL_FROM, to, subject, text });

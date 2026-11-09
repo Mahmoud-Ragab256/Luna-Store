@@ -1,0 +1,10 @@
+{
+  "database": "Atlas luna",
+  "products": 40,
+  "codPending": true,
+  "codCancellation": true,
+  "simulatedOnlinePayment": true,
+  "desktopAndMobile": true,
+  "realMoneyCharged": false,
+  "checkedAt": "2026-11-09T22:53:15.960Z"
+}

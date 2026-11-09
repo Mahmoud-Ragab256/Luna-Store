@@ -10,6 +10,7 @@ import {
   AuditLog,
   Order,
   Review,
+  MediaAsset,
 } from '../../database/models.js';
 import { requireAuth, requireAdmin } from '../../common/middleware/auth.js';
 import { validate } from '../../common/middleware/validate.js';
@@ -312,6 +313,9 @@ adminRouter.post('/uploads', upload.array('images', 8), async (req, res) => {
       );
       uploaded.push(image);
     }
+    await MediaAsset.insertMany(
+      uploaded.map((image) => ({ publicId: image.public_id, url: image.secure_url })),
+    );
   } catch (error) {
     await Promise.allSettled(uploaded.map((image) => cloudinary.uploader.destroy(image.public_id)));
     throw error;

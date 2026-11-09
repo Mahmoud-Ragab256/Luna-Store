@@ -9,7 +9,7 @@ import { validate } from '../../common/middleware/validate.js';
 import { requireAuth } from '../../common/middleware/auth.js';
 import { AppError } from '../../common/errors/app-error.js';
 import * as auth from './auth.service.js';
-import { sendAccountEmail } from '../../integrations/email/email.service.js';
+import { queueAccountEmail as sendAccountEmail } from '../../integrations/email/outbox.service.js';
 export const authRouter = Router();
 const email = z
   .string()

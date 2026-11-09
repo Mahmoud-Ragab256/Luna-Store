@@ -111,7 +111,9 @@ export default function Layout() {
         Skip to content
       </a>
       <div className="announcement">
-        A little something for your wardrobe.{' '}
+        {import.meta.env.VITE_DEMO_MODE === 'true'
+          ? 'LUNA demo store. Orders and payments are for testing only.'
+          : 'A little something for your wardrobe.'}{' '}
         <span>
           {shippingConfig?.data?.freeShippingThreshold != null
             ? `Free shipping over ${money(shippingConfig.data.freeShippingThreshold)}`

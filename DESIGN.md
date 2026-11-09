@@ -15,3 +15,5 @@ Reference research: https://www.cos.com/en-eu/women demonstrated category-first 
 Verification targets: desktop 1440x1000, mobile 390x844, catalog filtering, product unavailable variant, cart, checkout validation, authenticated/admin transitions, loading/error/empty, keyboard dialogs. Evidence under artifacts/.
 
 Language contract: English only, document lang=en and dir=ltr. No language switcher, translation dependencies or bilingual assets. Dates/numbers use en-EG with Africa/Cairo timezone; currency EGP. Updated by user instruction.
+
+Hosted demo variant (10 November): preserve existing luxury tokens/layout. The shared announcement carries a persistent test-store notice when VITE_DEMO_MODE=true. The payment screen exposes simulation controls only after the server returns a developmentOnly session. No real customer proof or dispatch claims are introduced.

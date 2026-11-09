@@ -5,3 +5,7 @@
 `catalog/fashion-1.jpg` through `fashion-8.jpg` are locally cached development placeholders fetched from images.unsplash.com. They are not accurate commercial product photographs and must be replaced with store-owned/licensed product images before launch. Source IDs, in order: photo-1539109136881-3be0616acf4b; photo-1483985988355-763728e1935b; photo-1515886657613-9f3515b0c78f; photo-1485230895905-ec40ba36b9bc; photo-1539008835657-9e8e9680c956; photo-1515372039744-b8f02a3ae446; photo-1532453288672-3a27e9be9efd; photo-1483985988355-763728e1935b. No verification of commercial model/property releases is claimed.
 
 `product-placeholder.svg` is a project-authored fallback illustration.
+
+## Hosted demo assets, 10 November 2026
+
+Seven existing Unsplash source images were uploaded to the authorized Cloudinary account under asset folder `luna/demo`, with new public IDs `luna-demo-fashion-1-20261110` through `luna-demo-fashion-7-20261110` and overwrite=false. Public HTTPS delivery URLs are recorded in server/src/database/seeds/demo-images.js. Images remain illustrative styling references, not verified merchandise photographs. The public demo notice and terms disclose this. No real model/property release or exclusive ownership claim is made.

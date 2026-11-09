@@ -92,3 +92,7 @@ Further documentation: [architecture](ARCHITECTURE.md), [API](API_DOCUMENTATION.
 24 backend tests, 10 component tests and 6 Chrome E2E workflows passed. See PROJECT_STATUS.md for exact scope and external-service limitations. The English/LTR update preserves COD and the development online-payment provider. To enable the labeled simulator locally, set `PAYMENT_PROVIDER=mock` with `NODE_ENV=development`; it is always disabled in production.
 
 For browser tests using installed Chrome in PowerShell: `$env:PLAYWRIGHT_CHANNEL='chrome'; npm run test:e2e`. Clean machines may use the bundled Playwright Chromium install. On this Windows workspace an optional ignored `.local/mongodb/mongod.exe` is reused automatically; other machines download MongoDB normally.
+
+## Hosted demonstration
+
+The current target is a Vercel-hosted demonstration with MongoDB Atlas and Cloudinary imagery. All orders and online payment outcomes are explicitly test-only. Real payment activation, a custom domain, Render and Resend are outside scope; email will use Brevo SMTP. Deployment status and remaining authorization/configuration steps are recorded in [PROJECT_STATUS.md](PROJECT_STATUS.md) and [DEPLOYMENT.md](DEPLOYMENT.md).

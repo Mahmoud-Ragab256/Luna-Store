@@ -4,6 +4,7 @@ import { env } from './config/env.js';
 import { logger } from './config/logger.js';
 import { expireReservations } from './modules/commerce/service.js';
 import mongoose from 'mongoose';
+import { deliverEmailOutbox } from './integrations/email/outbox.service.js';
 await connectDatabase();
 const server = app.listen(env.PORT, () => logger.info({ port: env.PORT }, 'LUNA API listening'));
 server.requestTimeout = 30000;
@@ -11,7 +12,9 @@ server.headersTimeout = 15000;
 server.on('error', (error) => logger.error({ err: error }, 'HTTP server error'));
 const expiryTimer = setInterval(
   () =>
-    expireReservations().catch((error) => logger.error({ err: error }, 'Inventory expiry failed')),
+    Promise.all([expireReservations(), deliverEmailOutbox()]).catch((error) =>
+      logger.error({ err: error }, 'Maintenance failed'),
+    ),
   60000,
 );
 expiryTimer.unref();
