@@ -5185,6 +5185,60 @@
           }
         }
       }
+    },
+    "/admin/email/test": {
+      "post": {
+        "summary": "Send one fixed-content email to a validated recipient (admin only, three per hour)",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "to"
+                ],
+                "properties": {
+                  "to": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SMTP accepted the message; inbox delivery is not guaranteed"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Administrator required"
+          },
+          "422": {
+            "description": "Invalid recipient"
+          },
+          "429": {
+            "description": "Test email rate limit exceeded"
+          },
+          "503": {
+            "description": "SMTP configuration unavailable"
+          }
+        }
+      }
     }
   },
   "components": {

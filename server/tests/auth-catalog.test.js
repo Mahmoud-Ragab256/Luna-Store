@@ -15,6 +15,15 @@ beforeAll(async () => { replica = await MongoMemoryReplSet.create({ replSet: { c
 afterAll(async () => { await mongoose.disconnect(); if (replica) await replica.stop(); });
 beforeEach(async () => { await Promise.all(Object.values(mongoose.models).map((Model) => Model.deleteMany({}))); });
 describe('Authentication and session boundaries', () => {
+  it('restricts email connection tests to admins and fails closed without SMTP configuration', async () => {
+    expect((await request(app).post('/api/v1/admin/email/test').send({ to: account.email })).status).toBe(401);
+    const registered = await request(app).post('/api/v1/auth/register').send(account);
+    const authorization = `Bearer ${registered.body.data.accessToken}`;
+    expect((await request(app).post('/api/v1/admin/email/test').set('Authorization', authorization).send({ to: account.email })).status).toBe(403);
+    await User.updateOne({ email: account.email }, { $set: { role: 'admin' } });
+    expect((await request(app).post('/api/v1/admin/email/test').set('Authorization', authorization).send({ to: 'invalid' })).status).toBe(422);
+    expect((await request(app).post('/api/v1/admin/email/test').set('Authorization', authorization).send({ to: account.email })).status).toBe(503);
+  });
   it('registers with a hashed password and a HttpOnly refresh cookie; rejects invalid data', async () => {
     const invalid = await request(app).post('/api/v1/auth/register').send({ ...account, password: 'short' }); expect(invalid.status).toBe(422);
     const response = await request(app).post('/api/v1/auth/register').send(account); expect(response.status).toBe(201); expect(response.body.data.user.email).toBe(account.email); expect(response.body.data.user.passwordHash).toBeUndefined(); expect(response.headers['set-cookie'][0]).toContain('HttpOnly');

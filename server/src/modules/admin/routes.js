@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { rateLimit } from 'express-rate-limit';
+import { sendAccountEmail } from '../../integrations/email/email.service.js';
 import { z } from 'zod';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
@@ -18,6 +20,29 @@ import { AppError } from '../../common/errors/app-error.js';
 import { env } from '../../config/env.js';
 export const adminRouter = Router();
 adminRouter.use(requireAuth, requireAdmin);
+adminRouter.post(
+  '/email/test',
+  rateLimit({ windowMs: 3600000, limit: 3, standardHeaders: 'draft-7', legacyHeaders: false }),
+  validate(z.object({ to: z.string().email().max(254) }).strict()),
+  async (req, res) => {
+    if (!env.SMTP_HOST || !env.SMTP_USER || !env.SMTP_PASS || !env.EMAIL_FROM)
+      throw new AppError(503, 'Configure SMTP and a verified sender before sending a test email.');
+    const result = await sendAccountEmail(
+      req.validated.to,
+      'LUNA email delivery test',
+      'This is the single test email you requested from the LUNA demonstration store. No order was placed and no payment was collected.',
+    );
+    if (!result.delivered)
+      throw new AppError(503, 'The email provider did not accept the test message.');
+    res.json({
+      data: {
+        acceptedBySmtp: true,
+        message:
+          'The SMTP provider accepted the test email. Check the recipient inbox and spam folder.',
+      },
+    });
+  },
+);
 const objectId = z.string().regex(/^[a-f\d]{24}$/i);
 const imageSource = z
   .string()
