@@ -1,5 +1,7 @@
 # LUNA design context
 
+Transactional email: server/src/integrations/email/email.template.js is the shared presentation adapter for SMTP messages. Reuse ivory/white/blush/charcoal/rose, the LUNA wordmark, serif headings and sans-serif body, with Georgia/Arial mail-client fallbacks. Presentation tables, inline critical styles and a 600px maximum width work without web-font or image downloads. Preserve plain text, same-origin account actions, payment facts and demo disclosure.
+
 Audience: women shopping for considered everyday fashion in Egypt; English interface, EGP pricing, Africa/Cairo dates. Authority: create, grounded in the supplied luxury editorial brief.
 
 Palette: ivory #FAF8F5 canvas, white #FFFFFF surfaces, charcoal #252525 text/action, blush #F4E8E6 secondary surface, beige #E9DED2 separators, rose #B98686 decoration. Rose is not used for small body text.

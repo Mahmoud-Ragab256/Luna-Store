@@ -1,5 +1,11 @@
 # Project status
 
+## Transactional email design, 11 November
+
+Shared HTML presentation now accompanies the unchanged plain-text SMTP message for verification, password reset, order receipts and administrative test messages. The design follows LUNA's luxury palette and typography with mail-client-safe fallbacks, inline critical styles, presentation tables and mobile sizing. Text is escaped and action links must match the configured storefront origin and expected route. Queue records and retry behavior are unchanged. No new message was sent during this task.
+
+Validation: 34 backend and 20 frontend tests passed, including four new email rendering tests; ESLint passed. Chrome preview checks passed for three variants at 390px and 900px, including no horizontal overflow and keyboard focus. HTML and screenshots are in artifacts/emails; regenerate with node scripts/preview-emails.js. Actual Outlook/Gmail application rendering is not certified by the browser checks.
+
 Updated 11 November 2026. Existing implementation was continued, not rebuilt. Source is uploaded to https://github.com/Mahmoud-Ragab256/Luna-Store.
 
 ## Implemented
