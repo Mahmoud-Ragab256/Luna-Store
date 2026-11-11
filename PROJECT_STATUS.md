@@ -14,14 +14,14 @@ Updated 11 November 2026. Existing implementation was continued, not rebuilt. So
 - Payment provider interface and explicitly development-only online payment simulator; HMAC webhook and independent provider-state checks. Hosted demo simulation requires DEMO_MODE=true and PAYMENT_PROVIDER=mock. Ordinary production remains disabled; real online payments and refunds are outside the current demo scope.
 - Protected admin product/category/customer/coupon/order/message management, image-upload boundary and analytics.
 - Public prerendered HTML with metadata, product/breadcrumb JSON-LD and sitemap; 62 pages generated from the clean local catalog.
-- OpenAPI contract with 73 operations, setup/security/database/deployment documentation and environment examples.
+- OpenAPI contract with 74 operations, setup/security/database/deployment documentation and environment examples.
 
 ## Actual validation
 
 | Check                                 | Result                                                                                                                                                                                               |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Dependency installation               | Completed; lockfile committed                                                                                                                                                                        |
-| Backend integration/concurrency tests | 29 passed against real isolated MongoDB replica sets                                                                                                                                                 |
+| Backend integration/concurrency tests | 30 passed against real isolated MongoDB replica sets                                                                                                                                                 |
 | Frontend component tests              | 10 passed, including final checkout review not submitting early                                                                                                                                      |
 | Chrome E2E                            | 6 passed: catalog/cart/mobile, COD purchase/history, admin CRUD/fulfillment/COD collection, admin API/UI, English/LTR/fonts/keyboard/recovery, development online payment                            |
 | ESLint                                | Passed                                                                                                                                                                                               |
@@ -66,3 +66,5 @@ E2E uses separate ports 5180/4100 and isolated databases, avoiding changes to th
 Final live URL: https://luna-store-peach.vercel.app. The previous hosted network failure is resolved. Remaining external configuration is Brevo EMAIL_FROM/sender verification and SMTP delivery verification; Cloudinary runtime upload configuration is verified. No claim of verified email delivery or runtime SDK uploads is made.
 
 Integration verification, 11 November: SMTP_HOST, SMTP_PORT, SMTP_USER and SMTP_PASS are present in the production environment; EMAIL_FROM is missing and no SMTP authentication or real email delivery pass is claimed. All three Cloudinary SDK values are present. The live administrator uploaded one new test image successfully; no existing asset was overwritten or deleted. Evidence: artifacts/cloudinary-runtime-check.json. The unused upload is tracked by the application for its normal seven-day cleanup policy.
+
+Brevo verification, 11 November: EMAIL_FROM is configured. One test message was explicitly authorized by the user and sent through the live admin-only, rate-limited endpoint /api/v1/admin/email/test. Brevo SMTP accepted it (HTTP 200, acceptedBySmtp=true). Inbox/spam placement remains for the recipient to confirm; acceptance is not an inbox-delivery guarantee. No bulk outbox drain was invoked. Evidence: artifacts/brevo-test-result.json. Cloudinary runtime upload is also verified. The previous missing-sender configuration note is superseded by this result.

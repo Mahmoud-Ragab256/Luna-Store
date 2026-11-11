@@ -1,0 +1,6 @@
+{
+  "status": 200,
+  "acceptedBySmtp": true,
+  "message": "The SMTP provider accepted the test email. Check the recipient inbox and spam folder.",
+  "checkedAt": "2026-11-11T08:34:52.781Z"
+}
