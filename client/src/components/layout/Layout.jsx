@@ -1,3 +1,4 @@
+import ShopLinks from './ShopLinks';
 import { useState, useEffect } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -131,8 +132,7 @@ export default function Layout() {
             {menu ? <X /> : <Menu />}
           </button>
           <nav className="desktop-nav" aria-label="Main navigation">
-            <NavLink to="/products">Shop</NavLink>
-            <NavLink to="/products?sort=newest">New arrivals</NavLink>
+            <ShopLinks />
             <NavLink to="/categories">Collections</NavLink>
           </nav>
           <Link className="wordmark" to="/" aria-label="LUNA home">
@@ -169,8 +169,7 @@ export default function Layout() {
         </div>
         {menu ? (
           <nav className="mobile-nav" aria-label="Mobile navigation">
-            <Link to="/products">Shop all</Link>
-            <Link to="/products?sort=newest">New arrivals</Link>
+            <ShopLinks shopLabel="Shop all" onNavigate={() => setMenu(false)} />
             <Link to="/categories">Collections</Link>
             <Link to="/account">My account</Link>
             <Link to="/contact">Contact</Link>
@@ -283,8 +282,7 @@ export default function Layout() {
           </div>
           <div>
             <h3>Explore</h3>
-            <Link to="/products">Shop all</Link>
-            <Link to="/products?sort=newest">New arrivals</Link>
+            <ShopLinks shopLabel="Shop all" />
             <Link to="/categories">Collections</Link>
             <Link to="/products?discount=true">The edit on sale</Link>
           </div>

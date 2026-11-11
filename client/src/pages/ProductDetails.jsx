@@ -1,4 +1,5 @@
-﻿import { useState, useEffect, useRef } from 'react';
+import ProgressiveImage from '../components/common/ProgressiveImage';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Heart, Minus, Plus, Truck, RotateCcw, Star, Maximize2 } from 'lucide-react';
@@ -151,11 +152,12 @@ export default function ProductDetails() {
           >
             {product.images.map((src, i) => (
               <SwiperSlide key={src.url || src}>
-                <img
+                <ProgressiveImage
                   src={src.url || src}
                   alt={`${product.name}, view ${i + 1}`}
                   width="900"
                   height="1200"
+                  sizes="(max-width: 900px) 100vw, 50vw"
                   loading={i ? 'lazy' : 'eager'}
                 />
               </SwiperSlide>
@@ -176,11 +178,12 @@ export default function ProductDetails() {
                 aria-label={`View image ${i + 1}`}
                 onClick={() => gallery.current?.slideTo(i)}
               >
-                <img
+                <ProgressiveImage
                   src={src.url || src}
                   alt={`Thumbnail ${i + 1}`}
                   width="80"
                   height="100"
+                  sizes="80px"
                   loading="lazy"
                 />
               </button>
@@ -438,7 +441,11 @@ export default function ProductDetails() {
         </table>
       </Dialog>
       <Dialog open={zoom} title={product.name} onClose={() => setZoom(false)}>
-        <img className="zoom-image" src={imageUrl(product)} alt={`${product.name} enlarged`} />
+        <ProgressiveImage
+          className="zoom-image"
+          src={imageUrl(product)}
+          alt={`${product.name} enlarged`}
+        />
       </Dialog>
     </div>
   );

@@ -9,3 +9,5 @@
 ## Hosted demo assets, 10 November 2026
 
 Seven existing Unsplash source images were uploaded to the authorized Cloudinary account under asset folder `luna/demo`, with new public IDs `luna-demo-fashion-1-20261110` through `luna-demo-fashion-7-20261110` and overwrite=false. Public HTTPS delivery URLs are recorded in server/src/database/seeds/demo-images.js. Images remain illustrative styling references, not verified merchandise photographs. The public demo notice and terms disclose this. No real model/property release or exclusive ownership claim is made.
+
+Performance derivatives (11 November): hero WebP files at 480/960/1536px plus a 40px preview were encoded from the original source without composition changes; editorial fashion-7/8 WebP derivatives also retain their original photographs. The source PNG/JPEG files remain intact. New capsule concept provenance is in new/ASSETS.md. The SVG favicon is a project-authored vector monogram.

@@ -1,3 +1,4 @@
+import ProgressiveImage from '../common/ProgressiveImage';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -49,7 +50,7 @@ export default function ProductCard({ product }) {
     <article className="product-card">
       <div className="product-picture">
         <Link to={`/products/${product.slug}`} aria-label={`View ${product.name}`}>
-          <img
+          <ProgressiveImage
             src={imageUrl(product)}
             alt={product.name}
             loading="lazy"
@@ -102,7 +103,7 @@ export default function ProductCard({ product }) {
       </div>
       <Dialog title={product.name} open={quick} onClose={() => setQuick(false)}>
         <div className="quick-content">
-          <img src={imageUrl(product)} alt={product.name} />
+          <ProgressiveImage src={imageUrl(product)} alt={product.name} />
           <div>
             <p className="price-large">{money(salePrice(product))}</p>
             <p>{product.description}</p>

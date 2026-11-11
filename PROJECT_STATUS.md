@@ -68,3 +68,17 @@ Final live URL: https://luna-store-peach.vercel.app. The previous hosted network
 Integration verification, 11 November: SMTP_HOST, SMTP_PORT, SMTP_USER and SMTP_PASS are present in the production environment; EMAIL_FROM is missing and no SMTP authentication or real email delivery pass is claimed. All three Cloudinary SDK values are present. The live administrator uploaded one new test image successfully; no existing asset was overwritten or deleted. Evidence: artifacts/cloudinary-runtime-check.json. The unused upload is tracked by the application for its normal seven-day cleanup policy.
 
 Brevo verification, 11 November: EMAIL_FROM is configured. One test message was explicitly authorized by the user and sent through the live admin-only, rate-limited endpoint /api/v1/admin/email/test. Brevo SMTP accepted it (HTTP 200, acceptedBySmtp=true). Inbox/spam placement remains for the recipient to confirm; acceptance is not an inbox-delivery guarantee. No bulk outbox drain was invoked. Evidence: artifacts/brevo-test-result.json. Cloudinary runtime upload is also verified. The previous missing-sender configuration note is superseded by this result.
+
+
+## Storefront image/navigation/catalog update ? 11 November
+
+- Fixed Shop and New arrivals appearing selected together: the shared navigation uses the sort query and exposes exactly one current catalog link.
+- Added ProgressiveImage across storefront, product gallery, cart/wishlist and image previews. Image-only skeletons preserve card information and geometry; the hero shows a blurred preview. Failure falls back without an endless skeleton. Reduced motion is respected; image stacking preserves wishlist/quick-view clicks.
+- Encoded hero WebP sizes: 480px = 22,288 bytes; 960px = 90,920 bytes; 1536px = 240,918 bytes; 40px preview = 894 bytes. The source PNG is 2,991,869 bytes and is retained, but the homepage no longer requests it. Two editorial images also use WebP. Cloudinary images receive responsive widths and automatic format/quality.
+- Created a native SVG L/crescent favicon and matching Apple touch icon.
+- The public domain is https://luna-store-peach.vercel.app, with no account name. Added a redirect rule from the old long production alias. Vercel's automatically generated preview/deployment URLs are separate platform URLs; the account/team was not renamed.
+- Added 8 individually reviewed AI product concepts to Atlas (48 total). Each has its own matching garment photo, correct category and exactly one pictured colour. Existing products were preserved. A second import added zero duplicates. Product/photo mapping and generated-image prompt provenance are committed.
+- Validation: 30 backend integration tests, 20 frontend tests and 9 Chrome E2E workflows passed. New tests cover delayed images, terminal fallback, geometry stability, active navigation, and wishlist/quick-view accessibility after load. Production build and lint passed. Local SEO snapshots passed for 70 pages and 48 product schemas.
+- Backend fixture startup initially failed because C had about 50MB free. Re-running with TEMP/TMP scoped to ignored `.runtime/test-tmp` on E passed all tests. No user files were deleted and no global environment setting changed.
+- The installed premium static auditor again timed out after 20 seconds; artifacts/image-loading-audit-run.json records this. No static audit pass is claimed.
+- Deployment and final live verification of this change follow the Git upload; earlier live verification remains recorded separately.

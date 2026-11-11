@@ -1,6 +1,6 @@
 {
-  "pages": 62,
-  "productPages": 40,
+  "pages": 70,
+  "productPages": 48,
   "sitemap": "pass",
   "checks": [
     {
@@ -130,6 +130,18 @@
       "status": "pass"
     },
     {
+      "path": "client\\dist\\products\\blue-straight-jeans\\index.html",
+      "h1": "The Classic Mid-Blue Straight Jean",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\cream-ribbed-knit\\index.html",
+      "h1": "The Cream Ribbed Crew Knit",
+      "product": true,
+      "status": "pass"
+    },
+    {
       "path": "client\\dist\\products\\essential-soft-tee\\index.html",
       "h1": "Essential Soft Tee",
       "product": true,
@@ -145,6 +157,36 @@
       "path": "client\\dist\\products\\index.html",
       "h1": "Your everyday, elevated.",
       "product": false,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\ivory-linen-dress\\index.html",
+      "h1": "The Ivory Linen Tie Dress",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\linen-relaxed-blazer\\index.html",
+      "h1": "The Oat Linen Relaxed Blazer",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\navy-cotton-tee\\index.html",
+      "h1": "The Navy Essential Tee",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\rose-pleated-skirt\\index.html",
+      "h1": "The Dusty Rose Pleated Midi",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\sand-tailored-trousers\\index.html",
+      "h1": "The Sand Pleated Tailored Trouser",
+      "product": true,
       "status": "pass"
     },
     {
@@ -372,6 +414,12 @@
     {
       "path": "client\\dist\\products\\the-wrap-maxi-dress\\index.html",
       "h1": "The Wrap Maxi Dress",
+      "product": true,
+      "status": "pass"
+    },
+    {
+      "path": "client\\dist\\products\\white-poplin-blouse\\index.html",
+      "h1": "The White Poplin Cuff Blouse",
       "product": true,
       "status": "pass"
     }

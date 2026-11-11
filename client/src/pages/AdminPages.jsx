@@ -1,3 +1,4 @@
+import ProgressiveImage from '../components/common/ProgressiveImage';
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -899,7 +900,7 @@ function ResourceForm({ resource, item, onDone }) {
               <div className="image-editor">
                 {values.images.map((image, i) => (
                   <div key={i}>
-                    <img
+                    <ProgressiveImage
                       src={image.url || image}
                       alt={`Product view ${i + 1}`}
                       width="80"

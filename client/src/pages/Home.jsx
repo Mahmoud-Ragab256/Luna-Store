@@ -1,3 +1,4 @@
+import ProgressiveImage from '../components/common/ProgressiveImage';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { useApiQuery } from '../api/baseApi';
@@ -39,9 +40,13 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <img
+        <ProgressiveImage
           className="hero-image"
-          src="/images/luna-hero.png"
+          src="/images/luna-hero-1536.webp"
+          srcSet="/images/luna-hero-480.webp 480w, /images/luna-hero-960.webp 960w, /images/luna-hero-1536.webp 1536w"
+          sizes="100vw"
+          placeholder="/images/luna-hero-preview.webp"
+          loading="eager"
           alt="LUNA editorial: ivory linen tailoring in a sunlit stone courtyard"
           fetchPriority="high"
           width="1536"
@@ -92,7 +97,7 @@ export default function Home() {
               key={c._id}
               className={`category-tile category-tile-${i}`}
             >
-              <img
+              <ProgressiveImage
                 src={c.image || '/images/product-placeholder.svg'}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -118,8 +123,8 @@ export default function Home() {
       />
       <section className="collection-story">
         <div className="collection-photo">
-          <img
-            src="/images/catalog/fashion-7.jpg"
+          <ProgressiveImage
+            src="/images/catalog/fashion-7.webp"
             alt="Soft neutral garments and natural fabrics"
             loading="lazy"
             width="1200"
@@ -159,8 +164,8 @@ export default function Home() {
             Discover seasonal layers <ArrowRight size={17} />
           </Link>
         </div>
-        <img
-          src="/images/catalog/fashion-8.jpg"
+        <ProgressiveImage
+          src="/images/catalog/fashion-8.webp"
           alt="A city wardrobe for a new season"
           loading="lazy"
           width="1000"
@@ -205,7 +210,7 @@ export default function Home() {
         <div className="community-grid">
           {cats.slice(3, 7).map((c) => (
             <Link to={`/categories/${c.slug}`} key={c._id}>
-              <img
+              <ProgressiveImage
                 src={c.image || '/images/product-placeholder.svg'}
                 onError={(e) => {
                   e.currentTarget.onerror = null;

@@ -98,3 +98,5 @@ For browser tests using installed Chrome in PowerShell: `$env:PLAYWRIGHT_CHANNEL
 The current target is a Vercel-hosted demonstration with MongoDB Atlas and Cloudinary imagery. All orders and online payment outcomes are explicitly test-only. Real payment activation, a custom domain, Render and Resend are outside scope; email will use Brevo SMTP. Deployment status and remaining authorization/configuration steps are recorded in [PROJECT_STATUS.md](PROJECT_STATUS.md) and [DEPLOYMENT.md](DEPLOYMENT.md).
 
 Live demonstration: https://luna-store-peach.vercel.app. The API is connected to Atlas; COD and online payment simulation were verified using fictional data. The demonstration does not collect real online payments or dispatch physical products.
+
+The hosted catalog now includes 48 products, including eight individually illustrated AI capsule concepts with matching colours and photos. Image loading uses a shared image-only skeleton/hero preview and responsive delivery. The canonical public URL is https://luna-store-peach.vercel.app. See client/public/images/new/ASSETS.md for the generated-photo prompt set.

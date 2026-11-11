@@ -4,11 +4,49 @@
   "outputDirectory": "client/dist",
   "framework": null,
   "functions": {
-    "api/index.js": { "maxDuration": 60, "includeFiles": "server/openapi.json" }
+    "api/index.js": {
+      "maxDuration": 60,
+      "includeFiles": "server/openapi.json"
+    }
   },
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ],
-  "crons": [{ "path": "/api/v1/internal/maintenance", "schedule": "0 3 * * *" }]
+  "crons": [
+    {
+      "path": "/api/v1/internal/maintenance",
+      "schedule": "0 3 * * *"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "luna-store-sendbad20006-2398s-projects.vercel.app"
+        }
+      ],
+      "destination": "https://luna-store-peach.vercel.app/:path*",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/images/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    }
+  ]
 }

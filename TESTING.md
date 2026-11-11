@@ -53,3 +53,8 @@ Additional checks: `npm audit` (0 reported vulnerabilities), `npm run build:seo`
 New integration coverage: hosted-demo payment opt-in/fail-closed behavior; atomic order email enqueue across idempotent retries; durable mail retry and concurrent delivery leases; maintenance authorization; reference-preserving cleanup of old application-owned media. No real SMTP message or payment is sent by tests.
 
 Live demo verification (10 November 2026): https://luna-store-peach.vercel.app passed Atlas health, registration, secure refresh cookie, customer/admin access separation, catalog, COD pending/cancellation, idempotent checkout, simulated online payment, admin login/analytics, product details and desktop/mobile browser checks. Zero browser JavaScript errors; no real payment was charged. See artifacts/live-demo-verification.json. SMTP delivery and SDK-based admin image uploads await separate runtime configuration.
+
+
+Image/navigation regression update: 30 backend, 20 frontend and 9 browser tests passed. `images-navigation.test.jsx` verifies exclusive query-aware navigation and image loading/fallback/source-change states. `images-navigation.spec.js` delays image requests, asserts visible product content, stable dimensions, usable wishlist/quick-view, hero preview and terminal fallback with reduced motion.
+
+On this machine C became nearly full. Scope TEMP and TMP to an ignored workspace directory for local test processes if needed; do not change the machine-wide environment or delete unrelated temporary files. The passing rerun used `.runtime/test-tmp` on E.

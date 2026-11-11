@@ -1,3 +1,4 @@
+import ProgressiveImage from '../components/common/ProgressiveImage';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -25,7 +26,7 @@ export function Categories() {
         <div className="categories-grid">
           {data?.data.map((c) => (
             <Link to={`/categories/${c.slug}`} className="category-tile" key={c._id}>
-              <img
+              <ProgressiveImage
                 src={c.image || '/images/product-placeholder.svg'}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -185,7 +186,13 @@ export function Journal() {
         <p>The LUNA point of view</p>
         <h1>Room to be yourself.</h1>
       </div>
-      <img src="/images/luna-hero.png" alt="LUNA linen editorial" width="1440" height="900" />
+      <ProgressiveImage
+        src="/images/luna-hero-960.webp"
+        sizes="(max-width: 760px) 100vw, 80vw"
+        alt="LUNA linen editorial"
+        width="1440"
+        height="900"
+      />
       <div className="reading-column">
         <h2>Getting dressed, a little differently.</h2>
         <p>

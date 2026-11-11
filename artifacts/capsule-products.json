@@ -1,0 +1,66 @@
+[
+  {
+    "name": "The Ivory Linen Tie Dress",
+    "slug": "ivory-linen-dress",
+    "category": "dresses",
+    "color": "Ivory",
+    "url": "https://res.cloudinary.com/dqssohz9k/image/upload/v1794389020/luna/products/yvlmbu2dlwdi9zxhfkpv.webp",
+    "localPhoto": "client/public/images/new/ivory-linen-dress.webp"
+  },
+  {
+    "name": "The Navy Essential Tee",
+    "slug": "navy-cotton-tee",
+    "category": "t-shirts",
+    "color": "Navy",
+    "url": "https://res.cloudinary.com/dqssohz9k/image/upload/v1794389021/luna/products/qhxarcht5zalxqi5srsj.webp",
+    "localPhoto": "client/public/images/new/navy-cotton-tee.webp"
+  },
+  {
+    "name": "The White Poplin Cuff Blouse",
+    "slug": "white-poplin-blouse",
+    "category": "blouses",
+    "color": "White",
+    "url": "https://res.cloudinary.com/dqssohz9k/image/upload/v1794389021/luna/products/vovxbsdbrkrpbevvdgbl.webp",
+    "localPhoto": "client/public/images/new/white-poplin-blouse.webp"
+  },
+  {
+    "name": "The Classic Mid-Blue Straight Jean",
+    "slug": "blue-straight-jeans",
+    "category": "jeans",
+    "color": "Blue",
+    "url": "https://res.cloudinary.com/dqssohz9k/image/upload/v1794389022/luna/products/jzbvoxxfqgzbcp0oqz0i.webp",
+    "localPhoto": "client/public/images/new/blue-straight-jeans.webp"
+  },
+  {
+    "name": "The Sand Pleated Tailored Trouser",
+    "slug": "sand-tailored-trousers",
+    "category": "pants",
+    "color": "Sand",
+    "url": "https://res.cloudinary.com/dqssohz9k/image/upload/v1794389022/luna/products/tnlnwxji0s5vc0ip2f2a.webp",
+    "localPhoto": "client/public/images/new/sand-tailored-trousers.webp"
+  },
+  {
+    "name": "The Dusty Rose Pleated Midi",
+    "slug": "rose-pleated-skirt",
+    "category": "skirts",
+    "color": "Rose",
+    "url": "https://res.cloudinary.com/dqssohz9k/image/upload/v1794389023/luna/products/drlwnikuh383gm5nys5c.webp",
+    "localPhoto": "client/public/images/new/rose-pleated-skirt.webp"
+  },
+  {
+    "name": "The Oat Linen Relaxed Blazer",
+    "slug": "linen-relaxed-blazer",
+    "category": "jackets",
+    "color": "Oat",
+    "url": "https://res.cloudinary.com/dqssohz9k/image/upload/v1794389023/luna/products/try43b2byb22smv4otyw.webp",
+    "localPhoto": "client/public/images/new/linen-relaxed-blazer.webp"
+  },
+  {
+    "name": "The Cream Ribbed Crew Knit",
+    "slug": "cream-ribbed-knit",
+    "category": "knitwear",
+    "color": "Cream",
+    "url": "https://res.cloudinary.com/dqssohz9k/image/upload/v1794389024/luna/products/ho8zyzpl7moibns3pxzc.webp",
+    "localPhoto": "client/public/images/new/cream-ribbed-knit.webp"
+  }
+]

@@ -1,3 +1,4 @@
+import ProgressiveImage from '../components/common/ProgressiveImage';
 import { useEffect, useRef, useState } from 'react';
 import {
   Link,
@@ -596,7 +597,7 @@ function CartLines({ items, editable = false }) {
       {items.map((item) => (
         <article className="cart-line" key={item.sku}>
           <Link to={item.slug ? `/products/${item.slug}` : '/products'}>
-            <img
+            <ProgressiveImage
               src={item.image || item.images?.[0]?.url || '/images/product-placeholder.svg'}
               alt={item.name}
               width="100"
@@ -1479,7 +1480,7 @@ export function WishlistPage() {
           {items.map((product) => (
             <article className="product-card" key={product._id}>
               <Link to={`/products/${product.slug}`}>
-                <img src={imageUrl(product)} alt={product.name} loading="lazy" />
+                <ProgressiveImage src={imageUrl(product)} alt={product.name} loading="lazy" />
                 <h2>{product.name}</h2>
                 <p>{money(product.basePrice)}</p>
               </Link>
