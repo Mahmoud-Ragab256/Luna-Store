@@ -211,6 +211,10 @@ operation('post', '/auth/refresh', 'Rotate refresh session cookie', {
     'Requires credentials and the configured frontend Origin for cookie-authenticated requests.',
   schema: ref('SessionResponse'),
 });
+operation('post', '/auth/session', 'Restore optional session or return guest state', {
+  description: 'Returns data=null for missing or invalid credentials. Valid refresh cookies rotate. Requires the configured frontend Origin for cookie-authenticated requests. Responses use Cache-Control: no-store.',
+  schema: { oneOf: [ref('SessionResponse'), object({ data: { type: 'null' } })] },
+});
 operation('post', '/auth/logout', 'Revoke current session and clear cookie');
 operation('get', '/auth/me', 'Get current public user', { auth: true });
 operation('post', '/auth/forgot-password', 'Request a password reset email', {

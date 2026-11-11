@@ -15,6 +15,25 @@ beforeAll(async () => { replica = await MongoMemoryReplSet.create({ replSet: { c
 afterAll(async () => { await mongoose.disconnect(); if (replica) await replica.stop(); });
 beforeEach(async () => { await Promise.all(Object.values(mongoose.models).map((Model) => Model.deleteMany({}))); });
 describe('Authentication and session boundaries', () => {
+  it('probes guests without 401 while keeping explicit refresh protected', async () => {
+    const guest = await request(app).post('/api/v1/auth/session');
+    expect(guest.status).toBe(200);
+    expect(guest.body.data).toBeNull();
+    expect(guest.headers['cache-control']).toBe('no-store');
+    expect((await request(app).post('/api/v1/auth/refresh')).status).toBe(401);
+    const invalid = await request(app).post('/api/v1/auth/session').set('Origin', origin).set('Cookie', 'luna_refresh=invalid');
+    expect(invalid.status).toBe(200);
+    expect(invalid.body.data).toBeNull();
+    expect(invalid.headers['set-cookie'][0]).toContain('Expires=Thu, 01 Jan 1970');
+  });
+  it('restores a valid session through the startup probe and rotates its cookie', async () => {
+    const registered = await request(app).post('/api/v1/auth/register').send(account);
+    const restored = await request(app).post('/api/v1/auth/session').set('Origin', origin).set('Cookie', cookie(registered));
+    expect(restored.status).toBe(200);
+    expect(restored.body.data.user.email).toBe(account.email);
+    expect(restored.body.data.accessToken).toBeTruthy();
+    expect(cookie(restored)).not.toBe(cookie(registered));
+  });
   it('restricts email connection tests to admins and fails closed without SMTP configuration', async () => {
     expect((await request(app).post('/api/v1/admin/email/test').send({ to: account.email })).status).toBe(401);
     const registered = await request(app).post('/api/v1/auth/register').send(account);

@@ -301,6 +301,52 @@
         }
       }
     },
+    "/auth/session": {
+      "post": {
+        "summary": "Restore optional session or return guest state",
+        "tags": [
+          "auth"
+        ],
+        "description": "Returns data=null for missing or invalid credentials. Valid refresh cookies rotate. Requires the configured frontend Origin for cookie-authenticated requests. Responses use Cache-Control: no-store.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/SessionResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "null"
+                        }
+                      },
+                      "required": [
+                        "data"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/logout": {
       "post": {
         "summary": "Revoke current session and clear cookie",
@@ -5182,60 +5228,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/admin/email/test": {
-      "post": {
-        "summary": "Send one fixed-content email to a validated recipient (admin only, three per hour)",
-        "tags": [
-          "Administration"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "to"
-                ],
-                "properties": {
-                  "to": {
-                    "type": "string",
-                    "format": "email",
-                    "maxLength": 254
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "SMTP accepted the message; inbox delivery is not guaranteed"
-          },
-          "401": {
-            "description": "Authentication required"
-          },
-          "403": {
-            "description": "Administrator required"
-          },
-          "422": {
-            "description": "Invalid recipient"
-          },
-          "429": {
-            "description": "Test email rate limit exceeded"
-          },
-          "503": {
-            "description": "SMTP configuration unavailable"
           }
         }
       }

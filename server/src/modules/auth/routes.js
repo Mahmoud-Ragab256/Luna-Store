@@ -50,6 +50,20 @@ authRouter.post(
 authRouter.post('/refresh', async (req, res) =>
   replySession(res, await auth.refresh(req.cookies.luna_refresh, req.get('user-agent'))),
 );
+
+// Optional startup probe: a guest is a normal state, not an authentication error.
+authRouter.post('/session', async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  if (!req.cookies.luna_refresh) return res.json({ data: null });
+  try {
+    const result = await auth.refresh(req.cookies.luna_refresh, req.get('user-agent'));
+    return replySession(res, result);
+  } catch (error) {
+    if (error.statusCode !== 401) throw error;
+    res.clearCookie('luna_refresh', { ...cookieOptions, maxAge: undefined });
+    return res.json({ data: null });
+  }
+});
 authRouter.post('/logout', async (req, res) => {
   if (req.cookies.luna_refresh)
     await Session.updateOne(

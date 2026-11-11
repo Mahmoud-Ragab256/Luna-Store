@@ -42,10 +42,10 @@ export default function Layout() {
   }, [location.pathname]);
   useEffect(() => {
     let live = true;
-    mutate({ url: '/auth/refresh', method: 'POST' })
+    mutate({ url: '/auth/session', method: 'POST' })
       .unwrap()
       .then((r) => {
-        if (live) dispatch(setCredentials(r.data));
+        if (live) dispatch(r.data ? setCredentials(r.data) : sessionReady());
       })
       .catch(() => {
         if (live) dispatch(sessionReady());

@@ -1,5 +1,11 @@
 # Project status
 
+## Guest session startup correction, 11 November
+
+The layout now calls POST /auth/session for optional session restoration. Guests receive 200 with data=null, without a database lookup. Valid cookies retain rotation; invalid/expired cookies become guest state and are cleared, while replay revocation remains enforced. Explicit POST /auth/refresh still returns 401 for invalid authentication. Session probe responses are not cached. No CSP directive was weakened: the reported chrome-extension content.js eval violation belongs to an extension context.
+
+Validation: 36 backend and 20 frontend tests passed, including guest startup, invalid cookie clearing, valid session restoration and explicit refresh protection; ESLint and production build passed.
+
 ## Transactional email design, 11 November
 
 Shared HTML presentation now accompanies the unchanged plain-text SMTP message for verification, password reset, order receipts and administrative test messages. The design follows LUNA's luxury palette and typography with mail-client-safe fallbacks, inline critical styles, presentation tables and mobile sizing. Text is escaped and action links must match the configured storefront origin and expected route. Queue records and retry behavior are unchanged. No new message was sent during this task.
