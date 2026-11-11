@@ -1,6 +1,6 @@
 # Project status
 
-Updated 10 November 2026. Existing implementation was continued, not rebuilt. Source is uploaded to https://github.com/Mahmoud-Ragab256/Luna-Store.
+Updated 11 November 2026. Existing implementation was continued, not rebuilt. Source is uploaded to https://github.com/Mahmoud-Ragab256/Luna-Store.
 
 ## Implemented
 
@@ -56,11 +56,13 @@ E2E uses separate ports 5180/4100 and isolated databases, avoiding changes to th
 - Deployment dpl_SeQXowAsjGNeYp3xHUHWbX7vv4FH (commit fa4e3dc) is READY. The public frontend responds HTTP 200. API health now responds HTTP 200 with database=true after the user updated Atlas Network Access. The full-stack live demo is operational.
 - Vercel runtime diagnostics show MongooseServerSelectionError, ReplicaSetNoPrimary and MongoNetworkError with ERR_SSL_TLSV1_ALERT_INTERNAL_ERROR for all Atlas members. Local Atlas access succeeds. After the user changed Atlas Network Access, the same Vercel deployment connected successfully; no TLS workaround or credential change was needed. The existing browser session is signed out of Atlas, and the connected MongoDB tools cannot manage Atlas network rules. No network rule was opened and TLS verification was not weakened.
 - Deployed checks passed: account registration, secure refresh-cookie rotation, customer denial from admin routes, catalog of 40 products, COD pending status, idempotent order retry, COD cancellation, simulated online payment, admin login/analytics, product details and responsive desktop/mobile rendering. No browser JavaScript errors were observed. Evidence: artifacts/live-demo-verification.json and live-demo screenshots. Fictional test orders were used; no real payment was charged.
-- Brevo will use SMTP. Sender verification and SMTP credentials remain pending. Cloudinary public catalog images work; runtime administrator uploads and cleanup still need the separate Cloudinary SDK credentials.
+- Brevo will use SMTP. Sender verification and SMTP credentials remain pending. Cloudinary public catalog images and runtime administrator uploads now work. The upload endpoint returned 201 and the uploaded image returned HTTP 200.
 - The protected daily maintenance route handles bounded work. Hosted email retries more frequent than daily require a suitable scheduler; immediate delivery is attempted for account/order requests when SMTP is configured.
 - Random demo administrator credentials are stored only in ignored `.runtime/demo-admin.json`; no password was committed or printed.
 - The UI skill audit again timed out in its parser after 20 seconds. `artifacts/premium-audit-run.json` records this; no static compliance pass is claimed.
 - Local public SEO HTML verification passed for 62 pages and 40 product schemas. A production SEO rebuild must use the final origin and be preserved by deployment; local SEO evidence is not a deployed SEO pass.
 - Render, Resend, real payments and a custom domain are outside the agreed demo scope. No paid hosting upgrade was enabled.
 
-Final live URL: https://luna-store-peach.vercel.app. The previous hosted network failure is resolved. Remaining external configuration is Brevo SMTP/sender verification and Cloudinary SDK credentials for new administrator uploads/cleanup; catalog Cloudinary images already work. No claim of verified email delivery or runtime SDK uploads is made.
+Final live URL: https://luna-store-peach.vercel.app. The previous hosted network failure is resolved. Remaining external configuration is Brevo EMAIL_FROM/sender verification and SMTP delivery verification; Cloudinary runtime upload configuration is verified. No claim of verified email delivery or runtime SDK uploads is made.
+
+Integration verification, 11 November: SMTP_HOST, SMTP_PORT, SMTP_USER and SMTP_PASS are present in the production environment; EMAIL_FROM is missing and no SMTP authentication or real email delivery pass is claimed. All three Cloudinary SDK values are present. The live administrator uploaded one new test image successfully; no existing asset was overwritten or deleted. Evidence: artifacts/cloudinary-runtime-check.json. The unused upload is tracked by the application for its normal seven-day cleanup policy.
