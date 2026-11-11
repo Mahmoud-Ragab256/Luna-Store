@@ -1,0 +1,18 @@
+{
+  "heroOriginalBytes": 2991869,
+  "hero480Bytes": 22288,
+  "hero1536Bytes": 240918,
+  "heroPreviewBytes": 894,
+  "cloudinary": {
+    "original": {
+      "status": 200,
+      "bytes": 400468,
+      "type": "image/jpeg"
+    },
+    "responsive480": {
+      "status": 200,
+      "bytes": 52306,
+      "type": "image/webp"
+    }
+  }
+}

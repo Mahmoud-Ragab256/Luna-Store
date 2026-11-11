@@ -1,0 +1,75 @@
+{
+  "url": "https://luna-store-peach.vercel.app",
+  "health": 200,
+  "products": 48,
+  "reviewedProductMatches": [
+    {
+      "slug": "ivory-linen-dress",
+      "name": "The Ivory Linen Tie Dress",
+      "category": "dresses",
+      "color": "Ivory",
+      "imageStatus": 200
+    },
+    {
+      "slug": "navy-cotton-tee",
+      "name": "The Navy Essential Tee",
+      "category": "t-shirts",
+      "color": "Navy",
+      "imageStatus": 200
+    },
+    {
+      "slug": "white-poplin-blouse",
+      "name": "The White Poplin Cuff Blouse",
+      "category": "blouses",
+      "color": "White",
+      "imageStatus": 200
+    },
+    {
+      "slug": "blue-straight-jeans",
+      "name": "The Classic Mid-Blue Straight Jean",
+      "category": "jeans",
+      "color": "Blue",
+      "imageStatus": 200
+    },
+    {
+      "slug": "sand-tailored-trousers",
+      "name": "The Sand Pleated Tailored Trouser",
+      "category": "pants",
+      "color": "Sand",
+      "imageStatus": 200
+    },
+    {
+      "slug": "rose-pleated-skirt",
+      "name": "The Dusty Rose Pleated Midi",
+      "category": "skirts",
+      "color": "Rose",
+      "imageStatus": 200
+    },
+    {
+      "slug": "linen-relaxed-blazer",
+      "name": "The Oat Linen Relaxed Blazer",
+      "category": "jackets",
+      "color": "Oat",
+      "imageStatus": 200
+    },
+    {
+      "slug": "cream-ribbed-knit",
+      "name": "The Cream Ribbed Crew Knit",
+      "category": "knitwear",
+      "color": "Cream",
+      "imageStatus": 200
+    }
+  ],
+  "exclusiveNavigation": true,
+  "mobileMenuClosesOnQueryNavigation": true,
+  "responsiveHero": {
+    "src": "https://luna-store-peach.vercel.app/images/luna-hero-480.webp",
+    "width": 389
+  },
+  "favicon": true,
+  "guestVariantCart": true,
+  "browserErrors": [],
+  "legacyStatus": 302,
+  "legacyNote": "The old Vercel-generated production alias is protected by Vercel authentication before app redirects. Use the clean public domain; team/account settings were not renamed.",
+  "checkedAt": "2026-11-11T09:48:45.080Z"
+}
